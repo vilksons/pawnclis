@@ -1,0 +1,14 @@
+Pawn Code Command Line Shell (PawnCLIS)
+>> Features:
+    * compilator,
+        * package manager,
+            * tool server.
+>> Required Linux: 
+    * Python3 - "sudo apt install python3"
+        * pip python {urllib3} - "sudo apt install python3-pip", "pip install urllib3"
+            * cURL - "sudo apt install curl"
+>> Required Windows:
+    * WSL/Git Bash - "scoop install extras/wslgit"
+        * Python3 - "scoop install versions/python313"
+            * pip python {urllib3} - "pip install urllib3"
+                * cURL - "scoop install main/curl"

@@ -1,0 +1,24 @@
+Navigate to the directory where libpawnc.so is located
+========
+    cd /path/to/libpawnc.so/
+
+Copy libpawnc.so to /usr/local/lib with sudo permissions
+========
+    sudo cp libpawnc.so /usr/local/lib/
+
+Update the dynamic linker cache
+========
+    sudo ldconfig
+
+Add the library path to LD_LIBRARY_PATH
+========
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+
+Persist the change by adding it to ~/.bashrc
+========
+    echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib' >> ~/.bashrc
+    source ~/.bashrc
+
+Verify if libpawnc.so is recognized
+========
+    ldconfig -p | grep libpawnc.so

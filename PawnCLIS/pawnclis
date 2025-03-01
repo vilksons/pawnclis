@@ -1,0 +1,1202 @@
+#!/bin/bash
+
+# {Project Scripts} : "pawnclis" - for Linux
+# {Copyright} GNU GPL Version 3, 29 June 2007 ("maintainers") ("2025")
+
+if [ ! -f "data.json" ]; then
+    cat > data.json <<EOF
+{
+    "amx_opt": "-d0",
+    "allow_subdir": "/pawno/include",
+    "ppman_type": "urllib3",
+    "ai_token": "",
+    "ai_model": "",
+    "ai_biodata": "",
+    "ai_json_get": ""
+}
+EOF
+fi
+
+##################################################################
+AMX_OPT_F=$(grep '"amx_opt"' data.json | sed -E 's/.*"amx_opt": "(.*)".*/\1/')
+##################################################################
+
+# @pawn-lang compiler 3.10.7^ - ("https://github.com/pawn-lang/compiler")
+
+# Usage:   pawncc <filename> [filename...] [options]
+# Options:
+#        -A<num>  alignment in bytes of the data segment and the stack
+#        -a       output assembler code
+#        -C[+/-]  compact encoding for output file (default=+)
+#        -c<name> codepage name or number; e.g. 1252 for Windows Latin-1
+#        -Dpath   active directory path
+#        -d<num>  debugging level (default=-d1)
+#            0    no symbolic information, no run-time checks
+#            1    run-time checks, no symbolic information
+#            2    full debug information and dynamic checking
+#            3    same as -d2, but implies -O0
+#        -e<name> set name of error file (quiet compile)
+#        -H<hwnd> window handle to send a notification message on finish
+#        -i<name> path for include files
+#        -l       create list file (preprocess only)
+#        -o<name> set base name of (P-code) output file
+#        -O<num>  optimization level (default=-O1)
+#            0    no optimization
+#            1    JIT-compatible optimizations only
+#            2    full optimizations
+#        -p<name> set name of "prefix" file
+#        -R[+/-]  add detailed recursion report with call chains (default=-)
+#        -r[name] write cross reference report to console or to specified file
+#        -S<num>  stack/heap size in cells (default=4096)
+#        -s<num>  skip lines from the input file
+#        -t<num>  TAB indent size (in character positions, default=8)
+#        -v<num>  verbosity level; 0=quiet, 1=normal, 2=verbose (default=1)
+#        -w<num>  disable a specific warning by its number
+#        -X<num>  abstract machine size limit in bytes
+#        -XD<num> abstract machine data/stack size limit in bytes
+#        -Z[+/-]  run in compatibility mode (default=-)
+#        -E[+/-]  turn warnings in to errors
+#        -\       use '\' for escape characters
+#        -^       use '^' for escape characters
+#        -;[+/-]  require a semicolon to end each statement (default=-)
+#        -([+/-]  require parantheses for function invocation (default=-)
+#        sym=val  define constant "sym" with value "val"
+#        sym=     define constant "sym" with value 0
+
+if [ ! -d .cache ]; then
+    mkdir .cache
+fi
+
+METADAT_FILE=".cache/compiler.log"
+
+SHUSERS="$USER@$(hostname)"
+
+bash_title() {
+    echo -ne "\033]0;$1\007"
+}
+
+bash_title "$SHUSERS:~"
+
+BASH_DIR="$(dirname "$0")"
+BASH_TITLE=""
+BASH_NAME="pawnclis"
+BASH_SERVER="samp03svr"
+BASH_BUILD="0.0.1-b3"
+BASH_ALLOW_SDIR=$(grep '"allow_subdir"' data.json | sed -E 's/.*"allow_subdir": "(.*)".*/\1/')
+
+COMPILER_MODE=false
+BASH_SEND_SAMP_STATUS=0
+BASH_SEND_PAWNCC_STATUS=0
+COMPILER_PAWNCC=""
+
+# ["https://groq.com/"]
+AI_TOKEN=$(grep '"ai_token"' data.json | sed -E 's/.*"ai_token": "(.*)".*/\1/')
+AI_MODEL=$(grep '"ai_model"' data.json | sed -E 's/.*"ai_model": "(.*)".*/\1/')
+AI_BIODATA=$(grep '"ai_biodata"' data.json | sed -E 's/.*"ai_biodata": "(.*)".*/\1/')
+AI_JSON_GET=$(grep '"ai_json_get"' data.json | sed -E 's/.*"ai_json_get": "(.*)".*/\1/')
+    # "python"
+    # "python3"
+    # "sed"
+    # "jq"
+    # "grep"
+
+PPMAN_INSTALLER=$(grep '"ppman_type"' data.json | sed -E 's/.*"ppman_type": "(.*)".*/\1/')
+    # "urllib3",
+    # "curl"
+
+URL_DOWNLOAD="https://raw.githubusercontent.com/vilksons/pawnclis/refs/heads/main/PawnCLIS/pawnclis"
+
+COLOR_Y="\e[33m"
+COLOR_G="\e[32m"
+COLOR_R="\e[31m"
+
+function bash_coltext_y() {
+    local color="$COLOR_Y"
+    local text="$1"
+    echo -e "${color}${text}\e[0m"
+}
+
+function bash_coltext_g() {
+    local color="$COLOR_G"
+    local text="$1"
+    echo -e "${color}${text}\e[0m"
+}
+
+function bash_coltext_r() {
+    local color="$COLOR_R"
+    local text="$1"
+    echo -e "${color}${text}\e[0m"
+}
+
+function bash_typeof() {
+    echo -n "$(bash_coltext_y "$SHUSERS")"
+    echo -n ":~$ "
+    read -r OPBASH_F
+    bash_next
+}
+
+bash_next() {
+    local SHOPTION="paw"
+
+    packageManager
+
+    case "$OPBASH_F" in
+        "$SHOPTION -c")
+            killall -9 "samp03svr" >/dev/null 2>&1
+            BASH_TITLE="compilers"
+            bash_title "$SHUSERS:~/ $BASH_TITLE"
+            echo
+            COMPILER_MODE=true
+            bash_compilers
+            ;;
+        "$SHOPTION -r")
+            killall -9 "samp03svr" >/dev/null 2>&1
+            BASH_TITLE="running"
+            bash_title "$SHUSERS:~/ $BASH_TITLE"
+            sleep 0
+            bash_servers
+            ;;
+        "$SHOPTION -d")
+            BASH_TITLE="samp server debugger"
+            bash_title "$SHUSERS:~/ $BASH_TITLE"
+            bash_testservers
+            ;;
+        "$SHOPTION -s")
+            killall -9 "samp03svr" >/dev/null 2>&1
+            bash_end
+            ;;
+        "$SHOPTION -u")
+            killall -9 "samp03svr" >/dev/null 2>&1
+            BASH_TITLE="compile running"
+            bash_title "$SHUSERS:~/ $BASH_TITLE"
+            COMPILER_MODE=false
+            echo
+            compilers
+            if grep -i "error" "$METADAT_FILE" >/dev/null; then
+                echo
+            else
+                ok_next
+            fi
+            ;;
+        "$SHOPTION -g") 
+            BASH_SEND_SAMP_STATUS=0
+            bash_send_samp
+            ;;
+        "$SHOPTION -p") 
+            BASH_SEND_PAWNCC_STATUS=0
+            bash_send_compiler
+            ;;
+        "$SHOPTION -C")
+            BASH_TITLE="clear screen"
+            bash_title "$SHUSERS:~/ $BASH_TITLE"
+            clear
+            bash_typeof
+            ;;
+        "$SHOPTION -V")
+            BASH_TITLE="vscode tasks"
+            bash_title "$SHUSERS:~/ $BASH_TITLE"
+            if [ -d ".vscode" ]; then
+                rm -rf .vscode
+            fi
+            mkdir .vscode
+            cat <<EOF > .vscode/tasks.json
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run PawnCLIS",
+      "type": "process",
+      "command": "\${workspaceFolder}/$BASH_NAME",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [],
+      "detail": "Task to run the PawnCLIS"
+    }
+  ]
+}
+EOF
+            echo "OK? '.vscode/tasks.json'...: [yes]"
+            bash_end
+            ;;
+        "$SHOPTION -F")
+            BASH_TITLE="folder check"
+            bash_title "$SHUSERS:~/ $BASH_TITLE"
+            check_folder "filterscripts"
+            check_folder "gamemodes"
+            check_folder "scriptfiles"
+            if [ -f "server.cfg" ]; then
+                echo
+                echo "# server.cfg is .. Ok .."
+                echo " [A subdirectory or file server.cfg already exists.]"
+            else
+                cat <<EOF > server.cfg
+echo Executing Server Config...
+lanmode 0
+rcon_password changename
+maxplayers 150
+port 7777
+hostname SA-MP 0.3
+gamemode0 main 1
+filterscripts
+announce 0
+chatlogging 0
+weburl www.sa-mp.com
+onfoot_rate 40
+incar_rate 40
+weapon_rate 40
+stream_distance 300.0
+stream_rate 1000
+maxnpc 0
+logtimeformat [%H:%M:%S]
+language English
+EOF
+                echo "OK? '$BASH_DIR/server.cfg'...: [yes]"
+                echo
+                cat server.cfg
+                echo
+                bash_end
+            fi
+            ;;
+        "$SHOPTION -v")
+            BASH_TITLE="version"
+            bash_title "$SHUSERS:~/ $BASH_TITLE"
+            echo
+            echo "~ $BASH_BUILD"
+            echo
+            bash_end
+            ;;
+        "$SHOPTION -T")
+            BASH_TITLE="type files"
+            bash_title "$SHUSERS:~/ $BASH_TITLE"
+            echo "Example: ~ server.cfg server_log.txt"
+            read -r -p "~ " inputTYPES
+            cat "$inputTYPES"
+            echo
+            bash_end
+            ;;
+        "$SHOPTION -D")
+            ls
+            ;;
+        "$SHOPTION -K")
+            chmod +x $BASH_NAME
+            bash ./$BASH_NAME
+            ;;
+        "$SHOPTION -U")
+            BASH_TITLE="Update"
+            bash_title "$SHUSERS:~/ $BASH_TITLE"
+            cd "$BASH_DIR" || bash_end
+            curl -L --progress-bar -o "$BASH_NAME" "$URL_DOWNLOAD"
+            clear
+            chmod +x $BASH_NAME
+            bash ./$BASH_NAME
+            ;;
+        "$SHOPTION -S")
+            BASH_TITLE="Checksums"
+            bash_title "$SHUSERS:~/ $BASH_TITLE"
+            cd "$BASH_DIR" || bash_end
+            sha1sum $BASH_NAME
+            sha256sum $BASH_NAME
+            md5sum $BASH_NAME
+            ;;
+        "$SHOPTION -W")
+            whoami
+            bash_end
+            ;;
+        "$SHOPTION -e")
+            bash
+            ;;
+        "$SHOPTION -a")
+            read -r -p "Quest: " user_question
+    
+            if [[ "$user_question" == "exit" ]]; then
+                echo "..close."
+                bash_end
+            fi
+
+            echo "*typing..."
+
+            response=$(curl -s -X POST https://api.groq.com/openai/v1/chat/completions \
+                -H "Authorization: Bearer $AI_TOKEN" \
+                -H "Content-Type: application/json" \
+                -d "{
+                    \"model\": \"$AI_MODEL\",
+                    \"messages\": [
+                        {
+                        \"role\": \"system\",
+                        \"content\": \"$AI_BIODATA\"
+                        },
+                        {
+                        \"role\": \"user\",
+                        \"content\": \"$user_question\"
+                        }
+                    ],
+                    \"temperature\": 1,
+                    \"max_tokens\": 1024,
+                    \"top_p\": 1,
+                    \"stream\": false,
+                    \"stop\": null
+                    }")
+
+            if [ "$AI_JSON_GET" == "python" ]; then
+                echo "$response" | python -c "import sys, json; print(json.load(sys.stdin)['choices'][0]['message']['content'])"
+            elif [ "$AI_JSON_GET" == "python3" ]; then
+                echo "$response" | python3 -c "import sys, json; print(json.load(sys.stdin)['choices'][0]['message']['content'])"
+            elif [ "$AI_JSON_GET" == "sed" ]; then
+                echo "$response" | sed -E 's/.*"content":"([^"]*)".*/\1/' | awk '{gsub(/\\n/, "\n")}1'
+            elif [ "$AI_JSON_GET" == "jq" ]; then
+                echo "$response" | jq -r '.choices[0].message.content'
+            elif [ "$AI_JSON_GET" == "grep" ]; then
+                echo "$response" | grep -oP '"content":"\K[^"]*'
+            fi
+            
+            echo "----------------------------------"
+            bash_end
+            ;;
+        "help")
+            BASH_TITLE="help"
+            bash_title "$SHUSERS:~/ $BASH_TITLE"
+            bash_help
+            bash_typeof
+            ;;
+        "$SHOPTION .")
+            bash_testservers
+            ;;
+        "$SHOPTION")
+            bash_help
+            bash_typeof
+            ;;
+        "")
+            bash_typeof
+            ;;
+        "pacman")
+            bash_help
+            bash_typeof
+            bash_typeof
+            ;;
+        " ")
+            bash_typeof
+            ;;
+        "$SHOPTION ")
+            ;;
+    esac
+}
+
+packageManager()
+{
+    local PACMAN="ppman"
+
+    case "$OPBASH_F" in
+        "$PACMAN -S")
+            BASH_TITLE="PawnCLIS Package Manager (Sync)"
+            bash_title "$SHUSERS:~/ $BASH_TITLE"
+
+            local ALLOW_INC_DIR="pawno/include"
+            local PLUGIN_DIR="plugins"
+            local PACKAGE_FILE="package.json"
+            local SERVER_CFG="server.cfg"
+
+            if [ ! -f "$PACKAGE_FILE" ]; then
+                echo -n "$(bash_coltext_r "error: ")"
+                echo "package.json not found"
+                
+                cat > package.json <<EOF
+{
+    "package": [
+        "github/example/user/repository",
+        "github/example/user/repository/to/files/.zip",
+        "github/example/user/repository/to/files/.tar.gz",
+        "gitlab/example/user/repository",
+        "gitlab/example/user/repository/to/files/.zip",
+        "gitlab/example/user/repository/to/files/.tar.gz"
+    ]
+}
+EOF
+
+                bash_end
+            fi
+
+            mkdir -p "$ALLOW_INC_DIR"
+            mkdir -p "$PLUGIN_DIR"
+
+            URLS=$(awk -F '"' '/package/ {getline; while ($0 ~ /"/) {print $2; getline}}' "$PACKAGE_FILE")
+
+            for REPO_URL in $URLS; do
+                echo "Processing repository: $REPO_URL..."
+
+                if [[ "$REPO_URL" != https://* ]]; then
+                    if [[ "$REPO_URL" == github/* ]]; then
+                        REPO_URL="https://github.com/${REPO_URL#github/}"
+                    elif [[ "$REPO_URL" == gitlab/* ]]; then
+                        REPO_URL="https://gitlab.com/${REPO_URL#gitlab/}"
+                    else
+                        echo "Unsupported repository host."
+                        bash_end
+                    fi
+                fi
+
+                echo -n "$(bash_coltext_y "info: ")"
+                echo "Final URL: $REPO_URL"
+
+                if [[ "$REPO_URL" == *"/releases/download/"* ]]; then
+                    ARCHIVE_URL="$REPO_URL"
+                elif [[ "$REPO_URL" == *"/releases/tag/"* ]]; then
+                    REPO_NAME=$(echo "$REPO_URL" | awk -F '/' '{print $(NF-3) "/" $(NF-2)}')
+                    TAG_VERSION=$(echo "$REPO_URL" | awk -F '/' '{print $NF}')
+                    
+                    if [[ "$REPO_URL" == *"github.com"* ]]; then
+                        API_URL="https://api.github.com/repos/$REPO_NAME/git/refs/tags/$TAG_VERSION"
+                    elif [[ "$REPO_URL" == *"gitlab.com"* ]]; then
+                        API_URL="https://gitlab.com/api/v4/projects/${REPO_NAME//\//%2F}/releases/$TAG_VERSION"
+                    else
+                        echo "Unsupported repository host."
+                        bash_end
+                    fi
+                    
+                    ARCHIVE_URL=$(curl -s "$API_URL" | grep -o '"browser_download_url":"[^"]*"' | awk -F '"' '{print $4}' | head -n 1)
+                else
+                    if [[ "$REPO_URL" == *"github.com"* ]]; then
+                        ARCHIVE_URL="$REPO_URL/archive/refs/heads/master.zip"
+                    elif [[ "$REPO_URL" == *"gitlab.com"* ]]; then
+                        ARCHIVE_URL="$REPO_URL/-/archive/master/master.zip"
+                    else
+                        echo "Unsupported repository host."
+                        bash_end
+                    fi
+                fi
+
+                ARCHIVE_FILE=".repo_temp.zip"
+                EXTRACT_DIR=".repo_extracted"
+
+                rm -rf "$EXTRACT_DIR"
+                mkdir -p "$EXTRACT_DIR"
+
+                echo -n "$(bash_coltext_y "info: ")"
+                echo "Downloading: $ARCHIVE_URL..."
+
+                if [ "$PPMAN_INSTALLER" == "urllib3" ]; then
+                    python3 -c "import urllib3; http=urllib3.PoolManager(); r=http.request('GET', '$ARCHIVE_URL', preload_content=False); f=open('$ARCHIVE_FILE', 'wb'); [f.write(chunk) for chunk in r.stream(1024)]; f.close(); r.release_conn()"
+                elif [ "$PPMAN_INSTALLER" == "curl" ]; then
+                    curl -sL "$ARCHIVE_URL" -o "$ARCHIVE_FILE"
+                fi
+
+                if file "$ARCHIVE_FILE" | grep -q "Zip archive data"; then
+                    unzip -q "$ARCHIVE_FILE" -d "$EXTRACT_DIR"
+                elif file "$ARCHIVE_FILE" | grep -q "gzip compressed data"; then
+                    mkdir -p "$EXTRACT_DIR"
+                    tar -xzf "$ARCHIVE_FILE" -C "$EXTRACT_DIR" --strip-components=1
+                else
+                    echo -n "$(bash_coltext_r "error: ")"
+                    echo "Downloaded file is not a valid ZIP or TAR.GZ archive"
+                    rm -rf "$ARCHIVE_FILE" "$EXTRACT_DIR"
+                    continue
+                fi
+
+                EXTRACTED_SUBDIR=$(find "$EXTRACT_DIR" -mindepth 1 -maxdepth 1 -type d | head -n 1)
+                
+                if [[ -d "$EXTRACTED_SUBDIR" ]]; then
+                    mv "$EXTRACTED_SUBDIR"/* "$EXTRACT_DIR/"
+                    rm -rf "$EXTRACTED_SUBDIR"
+                fi
+
+                echo -n "$(bash_coltext_y "info: ")"
+                echo "Final Extract Directory: $EXTRACT_DIR"
+
+                find "$EXTRACT_DIR" -type f -name "*.inc" | while IFS= read -r inc_file; do
+                    rel_path=$(realpath --relative-to="$EXTRACT_DIR" "$inc_file" 2>/dev/null || echo "$inc_file")
+
+                    if [[ "$rel_path" =~ (^|/)include/ ]]; then
+                        rel_path="${rel_path#*include/}"
+                    fi
+
+                    if [[ "$rel_path" == */* ]]; then
+                        dest_path="$ALLOW_INC_DIR/$(dirname "$rel_path")"
+                    else
+                        dest_path="$ALLOW_INC_DIR"
+                    fi
+
+                    mkdir -p "$dest_path"
+                    mv "$inc_file" "$dest_path/"
+                done
+
+                find "$EXTRACT_DIR" -type f \( -name "*.dll" -o -name "*.so" \) -exec mv {} "$PLUGIN_DIR/" \;
+
+                rm -rf "$ARCHIVE_FILE" "$EXTRACT_DIR"
+                echo -n "$(bash_coltext_y "info: ")"
+                echo "Installation complete for $REPO_URL!"
+            done
+
+            echo -n "$(bash_coltext_y "[All packages installed]")"
+            echo
+
+            mkdir -p "$PLUGIN_DIR"
+
+            if [ ! -f "$SERVER_CFG" ]; then
+                echo -n "$(bash_coltext_r "error: ")"
+                echo "$SERVER_CFG not found! Creating a new one."
+                echo "plugins " > "$SERVER_CFG"
+            fi
+
+            EXISTING_PLUGINS=$(grep -oP '(?<=plugins ).*' "$SERVER_CFG" | tr ' ' '\n' | sort -u)
+
+            NEW_PLUGINS=()
+            for FILE in "$PLUGIN_DIR"/*.{so,dll}; do
+            if [ -e "$FILE" ]; then
+                PLUGIN_NAME=$(basename "$FILE" | sed 's/\.[^.]*$//')
+                if ! echo "$EXISTING_PLUGINS" | grep -qx "$PLUGIN_NAME"; then
+                NEW_PLUGINS+=("$PLUGIN_NAME")
+                fi
+            fi
+            done
+
+            if [ ${#NEW_PLUGINS[@]} -gt 0 ]; then
+                UPDATED_PLUGINS=$(echo "$EXISTING_PLUGINS" "${NEW_PLUGINS[@]}" | tr '\n' ' ' | xargs -n1 | sort -u | xargs)
+                sed -i "s/^plugins .*/plugins $UPDATED_PLUGINS/" "$SERVER_CFG"
+                echo "Added new plugins to server.cfg: ${NEW_PLUGINS[*]}"
+            else
+                echo -n "$(bash_coltext_y "info: ")"
+                echo "No new plugins need to be added."
+            fi
+            bash $BASH_NAME
+            ;;
+        "$PACMAN -u")
+            BASH_TITLE="PawnCLIS Package Manager (Updates)"
+            bash_title "$SHUSERS:~/ $BASH_TITLE"
+
+            local ALLOW_INC_DIR="pawno/include"
+            local PLUGIN_DIR="plugins"
+            local PACKAGE_FILE="package.json"
+
+            if [ ! -f "$PACKAGE_FILE" ]; then
+                echo -n "$(bash_coltext_r "error: ")"
+                echo "package.json not found"
+                echo
+
+                cat > package.json <<EOF
+{
+    "package": [
+        "github/example/user/repository",
+        "github/example/user/repository/to/files/.zip",
+        "github/example/user/repository/to/files/.tar.gz",
+        "gitlab/example/user/repository",
+        "gitlab/example/user/repository/to/files/.zip",
+        "gitlab/example/user/repository/to/files/.tar.gz"
+    ]
+}
+EOF
+
+                bash_end
+            fi
+
+            mkdir -p "$ALLOW_INC_DIR" "$PLUGIN_DIR"
+
+            URLS=$(awk -F '"' '/package/ {getline; while ($0 ~ /"/) {print $2; getline}}' "$PACKAGE_FILE")
+
+            for REPO_URL in $URLS; do
+                echo "Processing repository: $REPO_URL..."
+
+                if [[ "$REPO_URL" != https://* ]]; then
+                    if [[ "$REPO_URL" == github/* ]]; then
+                        REPO_URL="https://github.com/${REPO_URL#github/}"
+                    elif [[ "$REPO_URL" == gitlab/* ]]; then
+                        REPO_URL="https://gitlab.com/${REPO_URL#gitlab/}"
+                    else
+                        echo "Unsupported repository host."
+                        bash_end
+                    fi
+                fi
+
+                if [[ "$REPO_URL" == *"/releases/download/"* ]]; then
+                    ARCHIVE_URL="$REPO_URL"
+                elif [[ "$REPO_URL" == *"/releases/tag/"* ]]; then
+                    REPO_NAME=$(echo "$REPO_URL" | awk -F '/' '{print $(NF-3) "/" $(NF-2)}')
+                    TAG_VERSION=$(echo "$REPO_URL" | awk -F '/' '{print $NF}')
+                    
+                    if [[ "$REPO_URL" == *"github.com"* ]]; then
+                        API_URL="https://api.github.com/repos/$REPO_NAME/git/refs/tags/$TAG_VERSION"
+                    elif [[ "$REPO_URL" == *"gitlab.com"* ]]; then
+                        API_URL="https://gitlab.com/api/v4/projects/$(echo "$REPO_NAME" | tr '/' '%2F')/releases/$TAG_VERSION"
+                    else
+                        echo "Unsupported repository host."
+                        bash_end
+                    fi
+
+                    ARCHIVE_URL=$(curl -s "$API_URL" | grep "browser_download_url" | grep -E ".zip|.tar.gz" | awk -F '"' '{print $4}' | head -n 1)
+                else
+                    REPO_NAME=$(echo "$REPO_URL" | awk -F '/' '{print $(NF-1) "/" $NF}')
+                    
+                    if [[ "$REPO_URL" == *"github.com"* ]]; then
+                        API_URL="https://api.github.com/repos/$REPO_NAME/git/refs/tags/$TAG_VERSION"
+                    elif [[ "$REPO_URL" == *"gitlab.com"* ]]; then
+                        API_URL="https://gitlab.com/api/v4/projects/$(echo "$REPO_NAME" | tr '/' '%2F')/releases/permalink/latest"
+                    else
+                        echo "Unsupported repository host."
+                        bash_end
+                    fi
+
+                    ARCHIVE_URL=$(curl -s "$API_URL" | grep "browser_download_url" | grep -E ".zip|.tar.gz" | awk -F '"' '{print $4}' | head -n 1)
+                fi
+
+                if [[ -z "$ARCHIVE_URL" ]]; then
+                    echo -n "$(bash_coltext_y "info: ")"
+                    echo "No release found, downloading source master..."
+                    ARCHIVE_URL="${REPO_URL}/archive/refs/heads/master.zip"
+                fi
+
+                ARCHIVE_FILE=".repo_temp"
+                EXTRACT_DIR=".repo_extracted"
+
+                rm -rf "$EXTRACT_DIR"
+                mkdir -p "$EXTRACT_DIR"
+
+                echo -n "$(bash_coltext_y "info: ")"
+                echo "Downloading: $ARCHIVE_URL..."
+                
+                if [ "$PPMAN_INSTALLER" == "urllib3" ]; then
+                    python3 -c "import urllib3; http=urllib3.PoolManager(); r=http.request('GET', '$ARCHIVE_URL', preload_content=False); f=open('$ARCHIVE_FILE', 'wb'); [f.write(chunk) for chunk in r.stream(1024)]; f.close(); r.release_conn()"
+                elif [ "$PPMAN_INSTALLER" == "curl" ]; then
+                    curl -sL "$ARCHIVE_URL" -o "$ARCHIVE_FILE"
+                fi
+
+                if file "$ARCHIVE_FILE" | grep -q "Zip archive data"; then
+                    echo "Extracting ZIP file..."
+                    unzip -q "$ARCHIVE_FILE" -d "$EXTRACT_DIR"
+                elif file "$ARCHIVE_FILE" | grep -q "gzip compressed data"; then
+                    echo "Extracting TAR.GZ file..."
+                    mkdir -p "$EXTRACT_DIR"
+                    tar -xzf "$ARCHIVE_FILE" -C "$EXTRACT_DIR" --strip-components=1
+                else
+                    echo "error: Downloaded file is not a valid ZIP or TAR.GZ archive"
+                    rm -rf "$ARCHIVE_FILE" "$EXTRACT_DIR"
+                    continue
+                fi
+
+                echo -n "$(bash_coltext_y "info: ")"
+                echo "Final Extract Directory: $EXTRACT_DIR"
+
+                find "$EXTRACT_DIR" -type f -name "*.inc" -exec bash -c '
+                    for inc_file; do
+                        rel_path=$(realpath --relative-to="$1" "$inc_file" 2>/dev/null || echo "$inc_file")
+                        dest_path="$2"
+
+                        if [[ "$rel_path" == include/* ]]; then
+                            rel_path="${rel_path#*/}"
+                        fi
+
+                        if [[ "$rel_path" == */* ]]; then
+                            dest_path="$2/$(dirname "$rel_path")"
+                        fi
+
+                        mkdir -p "$dest_path"
+                        mv "$inc_file" "$dest_path/"
+                        echo "Moved: $inc_file -> $dest_path"
+                    done
+                ' _ "$EXTRACT_DIR" "$ALLOW_INC_DIR" {} +
+
+                find "$EXTRACT_DIR" -type f \( -name "*.dll" -o -name "*.so" \) -exec mv {} "$PLUGIN_DIR/" \;
+
+                rm -rf "$ARCHIVE_FILE" "$EXTRACT_DIR"
+                echo "Update completed for $REPO_URL!"
+            done
+
+            echo -n "$(bash_coltext_y "[All packages have been updated]")"
+
+            bash $BASH_NAME
+            ;;
+        "$PACMAN -r")
+            BASH_TITLE="PawnCLIS Package Manager (Remove)"
+            bash_title "$SHUSERS:~/ $BASH_TITLE"
+
+            local ALLOW_INC_DIR="pawno/include"
+            local PLUGIN_DIR="plugins"
+            local SERVER_CFG="server.cfg"
+
+            echo "Enter the name of the include/plugin to remove:"
+            read -r REMOVE_NAME
+
+            INC_FILE=$(find "$ALLOW_INC_DIR" -type f -name "$REMOVE_NAME.inc" 2>/dev/null)
+            if [[ -n "$INC_FILE" ]]; then
+                rm -rf "$INC_FILE"
+                echo -n "$(bash_coltext_y "[OK] ")"
+                echo "Removed $INC_FILE"
+            else
+                echo -n "$(bash_coltext_y "info: ")"
+                echo "No include file found for: $REMOVE_NAME.inc"
+            fi
+
+            PLUGIN_FILES=$(find "$PLUGIN_DIR" -type f \( -name "$REMOVE_NAME.dll" -o -name "$REMOVE_NAME.so" \) 2>/dev/null)
+            if [[ -n "$PLUGIN_FILES" ]]; then
+                rm -rf "$PLUGIN_FILES"
+                echo -n "$(bash_coltext_y "[OK] ")"
+                echo "Removed Plugin(s) $PLUGIN_FILES"
+            else
+                echo -n "$(bash_coltext_y "info: ")"
+                echo "No plugin found for: $REMOVE_NAME"
+            fi
+
+            if [[ -f "$SERVER_CFG" ]]; then
+                if grep -q "^plugins" "$SERVER_CFG"; then
+                    sed -i "/^plugins /s/\b$REMOVE_NAME\b//g" "$SERVER_CFG"
+                    sed -i 's/  / /g' "$SERVER_CFG"
+                    sed -i 's/^plugins *$/plugins /' "$SERVER_CFG"
+                    echo -n "$(bash_coltext_y "[OK] ")"
+                    echo "Removed $REMOVE_NAME from server.cfg"
+                else
+                    echo -n "$(bash_coltext_y "info: ")"
+                    echo "No 'plugins' entry found in server.cfg"
+                fi
+            else
+                echo "error: server.cfg not found!"
+            fi
+
+            echo -n "$(bash_coltext_y "[OK] ")"
+            echo "Removal process completed!"
+            bash $BASH_NAME
+            ;;
+        *)
+            ;;
+    esac
+}
+
+function bash_help()
+{
+    echo "Usage: paw <command> [<options>...]"
+    echo ""
+    echo "Commonly used commands can be classified as follows:"
+    echo ""
+    echo "    Basic Operations:"
+    echo "        compile     (-c)   Compile a project."
+    echo "        running     (-r)   Check if a process is running."
+    echo "        debugger    (-d)   Start a debugger server."
+    echo "        stop        (-s)   Stop a server."
+    echo "        compile-run (-u)   Compile and run a project."
+    echo "        download-gm (-g)   Download a gamemode."
+    echo "        download-pc (-p)   Download pawncc."
+    echo "        clear       (-C)   Clear the screen."
+    echo "        checksums   (-S)   Generate or verify checksums."
+    echo "        folder-check(-F)   Check a folder's integrity."
+    echo "        vscode-tasks(-V)   Generate VSCode tasks."
+    echo "        type-file   (-T)   Display file type."
+    echo "        whoami      (-W)   Display current user."
+    echo "        kill-cmd    (-K)   Kill a command."
+    echo "        directory   (-D)   Change or display the current directory."
+    echo "        version     (-v)   Display tool version."
+    echo "        update      (-U)   Update the tool."
+    echo "        exit        (-e)   Exit or start a bash shell."
+    echo "        ask-ai      (-a)   Ask an AI for assistance."
+    echo ""
+    echo "    Package Management:"
+    echo "        sync        (-S)   Synchronize and install/replace packages. (pacman)"
+    echo "        update      (-u)   Update packages. (pacman)"
+    echo "        remove      (-r)   Remove packages. (pacman)"
+    echo ""
+}
+
+function bash_end() {
+    echo -n "$(bash_coltext_y "Press any key to return.")"
+    echo
+    read -r -n 1 -s
+    bash_typeof
+}
+
+function bash_servers() {
+    if [ -f "$BASH_DIR/server_log.txt" ]; then
+        rm -rf "$BASH_DIR/server_log.txt"
+    fi
+    if [ ! -f "$BASH_SERVER" ]; then
+        echo
+        echo "# $BASH_SERVER not found.."
+        BASH_SEND_SAMP_STATUS=1
+        bash_send_samp
+    fi
+    chmod 777 $BASH_SERVER
+    ./$BASH_SERVER &
+    sleep 2
+    if ! pgrep -x "samp03svr" >/dev/null; then
+        BASH_TITLE="running - failed"
+        bash_title "$SHUSERS:~/ $BASH_TITLE"
+        echo
+        echo -n "$(bash_coltext_r "# Fail")"
+        echo
+        if [ -f "server_log.txt" ]; then
+            sleep 2
+            cat server_log.txt
+            echo
+        else
+            echo "# server_log.txt not found."
+        fi
+        echo -n "$(bash_coltext_y "# End.")"
+        echo
+        bash_typeof
+    else
+        echo
+        echo -n "$(bash_coltext_y "# Success")"
+        echo
+        sleep 2
+        if grep -i "error" server_log.txt >/dev/null; then
+            start_true
+        else
+            start_false
+        fi
+    fi
+}
+
+function bash_testservers() {
+    if [ -f "$BASH_DIR/server_log.txt" ]; then
+        rm -rf "$BASH_DIR/server_log.txt"
+    fi
+    if [ ! -f "$BASH_SERVER" ]; then
+        echo
+        echo "# $BASH_SERVER not found.."
+        BASH_SEND_SAMP_STATUS=2
+        bash_send_samp
+    else
+        chmod 777 $BASH_SERVER
+        ./$BASH_SERVER &
+        sleep 1
+        cat server_log.txt
+        echo
+        killall -9 "samp03svr" >/dev/null 2>&1
+    fi
+    bash_end
+}
+
+function bash_compilers() {
+    SHFILE=false
+    
+    while IFS= read -r -d '' pawncc; do
+    if [ -f "$pawncc" ]; then
+        COMPILER_PAWNCC="$pawncc"
+        break
+    fi
+    done < <(find "$BASH_DIR" -name "pawncc" -print0)
+
+    if [ -z "$COMPILER_PAWNCC" ]; then
+        echo "# pawncc not found.."
+        echo
+        BASH_SEND_PAWNCC_STATUS=1
+        bash_send_compiler
+    fi
+
+    mapfile -d '' files < <(find "$BASH_DIR" -name "*.io*" -type f -print0)
+
+    for file in "${files[@]}"; do
+        if [ -f "$file" ] && [[ "$file" != *.amx ]]; then
+            SHFILE=true
+            bash_title "$file"
+
+            AMX_O="$(dirname "$file")/$(basename "${file%.io*}.amx")"
+
+            echo "Processing: $file"
+
+            "$COMPILER_PAWNCC" -i"$BASH_DIR$BASH_ALLOW_SDIR" "$file" -o"$AMX_O" $AMX_OPT_F > "$METADAT_FILE" 2>&1
+            EXIT_STATUS=$?
+
+            if [ $EXIT_STATUS -ne 0 ] || grep -q "fatal error" "$METADAT_FILE"; then
+                echo "Compilation failed with exit code: $EXIT_STATUS"
+                [ -f "$AMX_O" ] && rm -rf "$AMX_O"
+            fi
+
+            _cache_compiler
+            sleep 0
+            cat "$METADAT_FILE"
+
+            if [ -s "$AMX_O" ]; then
+                echo
+                echo "~ $AMX_O"
+                if [ "$COMPILER_MODE" == "true" ]; then
+                    BASH_TITLE="compilers"
+                    bash_title "$SHUSERS:~/ $BASH_TITLE"
+                elif [ "$COMPILER_MODE" == "false" ]; then
+                    BASH_TITLE="compiler - running"
+                    bash_title "$SHUSERS:~/ $BASH_TITLE"
+                fi
+                echo "total size : $(stat -c%s "$AMX_O") bytes"
+                echo
+            else
+                if [ "$COMPILER_MODE" == "false" ]; then
+                    bash_end
+                fi
+            fi
+        fi
+    done
+
+    if [ "$SHFILE" == "false" ]; then
+        echo -n "$(bash_coltext_r "..io not found!")"
+        echo
+        bash_end
+    fi
+    if [ "$COMPILER_MODE" == "true" ]; then
+        bash_end
+    elif [ "$COMPILER_MODE" == "false" ]; then
+        ok_next
+    fi
+}
+
+function _cache_compiler() {
+    cache_compiler=".cache/compiler.log"
+    _cache_compiler=".cache/.compiler.log"
+    if [ -f "$_cache_compiler" ]; then
+        rm -rf "$_cache_compiler"
+    fi
+    while IFS= read -r line; do
+        echo "~" >> "$_cache_compiler"
+        echo "$line" >> "$_cache_compiler"
+    done < "$cache_compiler"
+    mv "$_cache_compiler" "$cache_compiler" >/dev/null
+}
+
+function check_folder() {
+    local folder=$1
+    if [ -d "$folder" ]; then
+        echo
+        echo "# $folder is .. Ok .."
+        echo " [A subdirectory or file $folder already exists.]"
+        echo "-"
+        sleep 1
+    else
+        mkdir -p "$folder"
+        echo "OK? '$BASH_DIR/$folder'...: [yes]"
+
+        cat <<EOF > gamemodes/main.io.pwn
+#include <a_samp>
+
+main() {
+    print("Hello, World!");
+}
+EOF
+        sleep 1
+    fi
+}
+
+function start_true() {
+    echo -n "$(bash_coltext_r "~")"
+    echo "    ; \"error\"   .. Yes .. True"
+    error_cache
+}
+
+function start_false() {
+    echo -n "$(bash_coltext_y "~")"
+    echo "    ; \"error\"   .. No .. False"
+    check2
+}
+
+function check2() {
+    if grep -i "failed" server_log.txt >/dev/null; then
+        start_true2
+    else
+        start_false2
+    fi
+}
+
+function start_true2() {
+    echo -n "$(bash_coltext_r "~")"
+    echo "    ; \"failed\"  .. Yes .. True"
+    failed_cache
+}
+
+function start_false2() {
+    echo -n "$(bash_coltext_y "~")"
+    echo "    ; \"failed\"  .. No .. False"
+    check3
+}
+
+function check3() {
+    if grep -i "invalid" server_log.txt >/dev/null; then
+        start_true3
+    else
+        start_false3
+    fi
+}
+
+function start_true3() {
+    echo -n "$(bash_coltext_r "~")"
+    echo "    ; \"invalid\" .. Yes .. True"
+    invalid_cache
+}
+
+function start_false3() {
+    echo -n "$(bash_coltext_y "~")"
+    echo "    ; \"invalid\" .. No .. False"
+    echo
+    bash_end
+}
+
+function error_cache() {
+    echo
+    grep -i "error" server_log.txt
+    echo
+    check2
+}
+
+function failed_cache() {
+    echo
+    grep -i "failed" server_log.txt
+    echo
+    check3
+}
+
+function invalid_cache() {
+    echo
+    grep -i "invalid" server_log.txt
+    echo
+    bash_end
+}
+
+function ok_next() {
+    echo -n "$(bash_coltext_y "Press any key to running.")"
+    echo
+    read -r -n 1 -s
+    bash_servers
+}
+
+function bash_send_samp()
+{
+    echo "Do you want to continue downloading SA-MP? (Yy/Nn)"
+    read -r -p ">> " SEL_C
+    if [[ "$SEL_C" =~ ^[Yy]$ ]]; then
+        cd "$BASH_DIR" || bash_end
+        echo "Select the SA-MP version to download:"
+        echo "[A/a] SA-MP 0.3.7 R2-1-1"
+        echo "[B/b] SA-MP 0.3.7 R3"
+        echo "[C/c] SA-MP 0.3.DL R1"
+        read -r -p ">> " _VERSION_
+        case "$_VERSION_" in
+            [Aa])
+                URL_CURL="https://files.sa-mp.app/samp037svr_R2-2-1.tar.gz"
+                FILE_CURL="samp037svr_R2-2-1.tar.gz"
+                ;;
+            [Bb])
+                URL_CURL="https://files.sa-mp.app/samp037svr_R3.tar.gz"
+                FILE_CURL="samp037svr_R3.tar.gz"
+                ;;
+            [Cc])
+                URL_CURL="https://sa-mp.co.id/files/samp03DLsvr_R1.tar.gz"
+                FILE_CURL="samp03DLsvr_R1.tar.gz"
+                ;;
+            *)
+            echo -n "$(bash_coltext_r "error: ")"
+            echo "Invalid selection. Please enter A, B, or C."
+            ;;
+        esac
+        echo -e "\nDownloading: $URL_CURL -> $FILE_CURL"
+        if ! curl -L --progress-bar -o "$FILE_CURL" "$URL_CURL"; then
+            echo "failed: Failed to download the file.."
+            echo "failed: Failed to download the file.."
+
+            BASH_SEND_SAMP_STATUS=0
+            if [ $BASH_SEND_SAMP_STATUS == 1 ]; then
+                bash_servers
+            elif [ $BASH_SEND_SAMP_STATUS == 2 ]; then
+                bash_testservers
+            elif [ $BASH_SEND_SAMP_STATUS == 0 ]; then
+                bash_end
+            fi
+        else
+            tar -xzvf "$FILE_CURL" -C "$BASH_DIR" --strip-components=1
+            echo
+            echo -n "$(bash_coltext_y "Download completed successfully.")"
+            echo
+            echo "Please rename \"rcon_password\" before running this command again"
+
+            BASH_SEND_SAMP_STATUS=0
+            if [ $BASH_SEND_SAMP_STATUS == 1 ]; then
+                bash_servers
+            elif [ $BASH_SEND_SAMP_STATUS == 2 ]; then
+                bash_testservers
+            elif [ $BASH_SEND_SAMP_STATUS == 0 ]; then
+                bash_end
+            fi
+        fi
+    else
+        BASH_SEND_SAMP_STATUS=0
+        if [ $BASH_SEND_SAMP_STATUS == 1 ]; then
+            bash_servers
+        elif [ $BASH_SEND_SAMP_STATUS == 2 ]; then
+            bash_testservers
+        elif [ $BASH_SEND_SAMP_STATUS == 0 ]; then
+            bash_end
+        fi
+    fi
+}
+
+function bash_send_compiler()
+{
+    echo "Do you want to continue downloading PawnCC? (Yy/Nn)"
+    read -r -p ">> " SEL_C
+    if [[ "$SEL_C" =~ ^[Yy]$ ]]; then
+        cd "$BASH_DIR" || bash_end
+        echo "Select the PawnCC version to download:"
+        echo "[A/a] PawnCC 3.10.10"
+        echo "[B/b] PawnCC 3.10.9"
+        echo "[C/c] PawnCC 3.10.8"
+        echo "[D/d] PawnCC 3.10.7"
+        echo "[E/e] PawnCC 3.10.6"
+        echo "[F/f] PawnCC 3.10.5"
+        read -r -p ">> " _VERSION_
+        case "$_VERSION_" in
+            [Aa])
+                URL_CURL="https://github.com/pawn-lang/compiler/releases/download/v3.10.10/pawnc-3.10.10-linux.tar.gz"
+                FILE_CURL="pawnc-3.10.10-linux.tar.gz"
+                ;;
+            [Bb])
+                URL_CURL="https://github.com/pawn-lang/compiler/releases/download/v3.10.9/pawnc-3.10.9-linux.tar.gz"
+                FILE_CURL="pawnc-3.10.9-linux.tar.gz"
+                ;;
+            [Cc])
+                URL_CURL="https://github.com/pawn-lang/compiler/releases/download/v3.10.8/pawnc-3.10.8-linux.tar.gz"
+                FILE_CURL="pawnc-3.10.8-linux.tar.gz"
+                ;;
+            [Dd])
+                URL_CURL="https://github.com/pawn-lang/compiler/releases/download/v3.10.7/pawnc-3.10.7-linux.tar.gz"
+                FILE_CURL="pawnc-3.10.7-linux.tar.gz"
+                ;;
+            [Ee])
+                URL_CURL="https://github.com/pawn-lang/compiler/releases/download/v3.10.6/pawnc-3.10.6-linux.tar.gz"
+                FILE_CURL="pawnc-3.10.6-linux.tar.gz"
+                ;;
+            [Ff])
+                URL_CURL="https://github.com/pawn-lang/compiler/releases/download/v3.10.5/pawnc-3.10.5-linux.tar.gz"
+                FILE_CURL="pawnc-3.10.5-linux.tar.gz"
+                ;;
+            *)
+            echo -n "$(bash_coltext_r "error: ")"
+            echo "Invalid selection. Please enter A, B, C, D, or E, F."
+            return
+            ;;
+        esac
+        echo -e "\nDownloading: $URL_CURL -> $FILE_CURL"
+        if ! curl -L --progress-bar -o "$FILE_CURL" "$URL_CURL"; then
+            echo "failed: Failed to download the file.."
+
+            BASH_SEND_PAWNCC_STATUS=0
+            if [ $BASH_SEND_PAWNCC_STATUS == 1 ]; then
+                bash_compilers
+            elif [ $BASH_SEND_PAWNCC_STATUS == 0 ]; then
+                bash_end
+            fi
+        else
+            tar -xzvf "$FILE_CURL" -C "$BASH_DIR" --strip-components=1
+            echo
+            echo -n "$(bash_coltext_y "Download completed successfully.")"
+            echo
+
+            BASH_SEND_PAWNCC_STATUS=0
+            if [ $BASH_SEND_PAWNCC_STATUS == 1 ]; then
+                bash_compilers
+            elif [ $BASH_SEND_PAWNCC_STATUS == 0 ]; then
+                bash_end
+            fi
+        fi
+    else
+        BASH_SEND_PAWNCC_STATUS=0
+        if [ $BASH_SEND_PAWNCC_STATUS == 1 ]; then
+            bash_compilers
+        elif [ $BASH_SEND_PAWNCC_STATUS == 0 ]; then
+            bash_end
+        fi
+    fi
+}
+
+bash_typeof

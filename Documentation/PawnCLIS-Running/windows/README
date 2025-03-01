@@ -1,0 +1,11 @@
+Windows
+-------
+    WSL:
+    chmod +x pawnclis_win
+    --
+    bash ./pawnclis_win
+    -
+    Git-bash:
+    chmod +x pawnclis_win
+    --
+    bash ./pawnclis_win

@@ -1,0 +1,12 @@
+>> hope for "amx_opt" not to fill in things like "option1", "option2" and so on, but you can add options two three four and so on with expectations like: "option1 option2 option3" (in one string line only).
+    ```json
+        {
+            "amx_opt": "opt1 opt2 opt3 opt4 opt5 opt6..",
+            "allow_subdir": "where_pawncc_and_include",
+            "ppman_type": "pawnclis_package_manager_installer_type",
+            "ai_token": "ai_groq_token",
+            "ai_model": "ai_groq_model",
+            "ai_biodata": "ai_groq_biodata",
+            "ai_json_get": "ai_groq_json_get_type"
+        }
+    ```
