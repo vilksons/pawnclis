@@ -1,9 +1,0 @@
-{
-    "amx_opt": "-d0",
-    "allow_subdir": "/pawno/include",
-    "ppman_type": "urllib3",
-    "ai_token": "",
-    "ai_model": "",
-    "ai_biodata": "",
-    "ai_json_get": ""
-}
