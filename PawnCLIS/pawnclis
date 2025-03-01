@@ -135,10 +135,15 @@ function bash_typeof() {
     bash_next
 }
 
+function bash_typeof2() {
+    echo -n "$(bash_coltext_y "$SHUSERS")"
+    echo -n ":~$ "
+    read -r OPBASH_C
+    packageManager
+}
+
 bash_next() {
     local SHOPTION="paw"
-
-    packageManager
 
     case "$OPBASH_F" in
         "$SHOPTION -c")
@@ -354,6 +359,9 @@ EOF
             echo "----------------------------------"
             bash_end
             ;;
+        "$SHOPTION -M")
+            bash_typeof2
+            ;;
         "help")
             BASH_TITLE="help"
             bash_title "$SHUSERS:~/ $BASH_TITLE"
@@ -378,7 +386,9 @@ EOF
         " ")
             bash_typeof
             ;;
-        "$SHOPTION ")
+        *)
+            echo "not found!. please use 'help'"
+            bash_typeof
             ;;
     esac
 }
@@ -387,7 +397,7 @@ packageManager()
 {
     local PACMAN="ppman"
 
-    case "$OPBASH_F" in
+    case "$OPBASH_C" in
         "$PACMAN -S")
             BASH_TITLE="PawnCLIS Package Manager (Sync)"
             bash_title "$SHUSERS:~/ $BASH_TITLE"
@@ -754,7 +764,24 @@ EOF
             echo "Removal process completed!"
             bash $BASH_NAME
             ;;
+            "$PACMAN")
+                bash_help2
+                bash_typeof2
+            ;;
+            "$PACMAN ")
+                bash_help2
+                bash_typeof2
+            ;;
+            "help")
+                bash_help2
+                bash_typeof2
+            ;;
+            "$PACMAN -E")
+                bash_typeof
+            ;;
         *)
+            echo "not found!. please use 'help'"
+            bash_typeof2
             ;;
     esac
 }
@@ -785,11 +812,23 @@ function bash_help()
     echo "        update      (-U)   Update the tool."
     echo "        exit        (-e)   Exit or start a bash shell."
     echo "        ask-ai      (-a)   Ask an AI for assistance."
+    echo "        ppman       (-M)   Enter PawnCLIS Package Manager Mode."
     echo ""
     echo "    Package Management:"
-    echo "        sync        (-S)   Synchronize and install/replace packages. (pacman)"
-    echo "        update      (-u)   Update packages. (pacman)"
-    echo "        remove      (-r)   Remove packages. (pacman)"
+    echo "        sync        (-S)   Synchronize and install/replace packages. (ppman)"
+    echo "        update      (-u)   Update packages. (ppman)"
+    echo "        remove      (-r)   Remove packages. (ppman)"
+    echo "        end         (-E)   End PawnCLIS Package Manager Mode."
+    echo ""
+}
+
+function bash_help2()
+{
+    echo "    Package Management:"
+    echo "        sync        (-S)   Synchronize and install/replace packages. (ppman)"
+    echo "        update      (-u)   Update packages. (ppman)"
+    echo "        remove      (-r)   Remove packages. (ppman)"
+    echo "        end         (-E)   End PawnCLIS Package Manager Mode."
     echo ""
 }
 
@@ -890,7 +929,7 @@ function bash_compilers() {
 
             echo "Processing: $file"
 
-            "$COMPILER_PAWNCC" -i"$BASH_DIR$BASH_ALLOW_SDIR" "$file" -o"$AMX_O" $AMX_OPT_F > "$METADAT_FILE" 2>&1
+            "$COMPILER_PAWNCC" -i"$BASH_DIR$BASH_ALLOW_SDIR" "$file" -o"$AMX_O" "$AMX_OPT_F" > "$METADAT_FILE" 2>&1
             EXIT_STATUS=$?
 
             if [ $EXIT_STATUS -ne 0 ] || grep -q "fatal error" "$METADAT_FILE"; then

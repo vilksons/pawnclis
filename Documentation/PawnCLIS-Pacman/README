@@ -1,0 +1,2 @@
+>> How to use PPMAN?
+    There are two modes in PawnCLIS, Paw Mode and PPMAN Mode, the difference between the two is that in Paw Mode you cannot use PPMAN (package manager) and vice versa. Before you use the command `$ ppman` you have to enter the mode first, with `$ paw -M` then use `$ help` to list further commands. and to exit PPMAN Mode you can use `$ ppman -E`
