@@ -30,11 +30,6 @@ To exit PPM Mode, use:
 
     $ ppm -E
 
-Note
-===============
-PawnCLIS Package Manager (PPM) is an additional tool from PawnCLIS to be able to perform Package Manager more efficiently, including ``cURL`` ``pyRequests`` ``pyUrllib3`` ``pycURL``. and PPM itself, you don't need to worry about the installation of ``.dll`` ``.so`` ``.inc`` because PawnCLIS Package Manager will adjust it. and you also don't need to worry about installing Advanced Includes like Y_LESS Include because PPM will also adjust it.
-
-With Args
 =========
 How to use PPM with Args?
 ===============
@@ -58,3 +53,7 @@ Remove:
 .. code-block:: shell
 
     $ remove textdraw-streamer
+
+Note
+===============
+PawnCLIS Package Manager (PPM) is an additional tool from PawnCLIS to be able to perform Package Manager more efficiently, including ``curl`` ``requests`` ``urllib3`` ``pycurl``. and PPM itself, you don't need to worry about the installation of ``.dll`` ``.so`` ``.inc`` because PawnCLIS Package Manager will adjust it. and you also don't need to worry about installing Advanced Includes like Y_LESS Include because PPM will also adjust it.
