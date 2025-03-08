@@ -30,7 +30,6 @@ To exit PPM Mode, use:
 
     $ ppm -E
 
-=========
 How to use PPM with Args?
 ===============
 
