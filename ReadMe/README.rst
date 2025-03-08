@@ -12,7 +12,7 @@ Before proceeding, rename your ``*.pwn`` files to one of the following formats:
 - ``*.io.pwn``
 - ``*.io.xyz``
 
-2. Compiling with `paw`
+2. Compiling with ``$ paw``
 -----------------------
 To compile using the default settings, run the following command:
 
