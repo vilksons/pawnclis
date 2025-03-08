@@ -25,4 +25,4 @@
     And Switch Testing/UnStable to Rolling
   Upgrade Package Manager
   Added Module "libppm" & "libpawnclis"
-  Updated `paw -U` -> Added checking Version.
+  Updated `paw -S` -> Added checking Version.

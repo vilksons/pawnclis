@@ -587,7 +587,7 @@ EOF
             chmod +x $BASH_NAME
             bash ./$BASH_NAME
             ;;
-        "$BASH_OPTION -U" | "update")
+        "$BASH_OPTION -S" | "update" | "sync")
             BASH_TITLE="Update PawnCLIS"
             bash_title "$SHUSERS:~/ $BASH_TITLE"
 
@@ -614,14 +614,14 @@ EOF
             chmod +x $BASH_NAME
             bash ./$BASH_NAME
             ;;
-        "$BASH_OPTION -S"* | "checksums"*)
+        "$BASH_OPTION -X"* | "checksums"*)
             BASH_TITLE="Checksums"
             bash_title "$SHUSERS:~/ $BASH_TITLE"
 
-            local FOR_FIND_ARGS="${OPBASH_F#"$BASH_OPTION -S"}"
+            local FOR_FIND_ARGS="${OPBASH_F#"$BASH_OPTION -X"}"
             local FOR_FIND_ARGS="${FOR_FIND_ARGS#checksums}"
 
-            cd "$BASH_DIR" || echo -n "$(bash_coltext_r "E: ")" && echo "failed to change directory. please check the folder."
+            cd "$BASH_DIR" || echo ""
 
             if [[ -n "$FOR_FIND_ARGS" ]]; then
                 FOR_FIND_INPUT="$FOR_FIND_ARGS"
@@ -718,6 +718,24 @@ EOF
             
             bash_end ""
             ;;
+        "$BASH_OPTION -O" | "remcac")
+            echo -n "Cache Directory: $BASH_DIR/.cache"
+            echo 
+            read -r -p ":: Do you want to remove ALL files from cache? [Y/N] " PERMISSION_NEED
+
+            while true; do
+            case "$PERMISSION_NEED" in
+                [Yy])
+                    cd "$BASH_DIR" || echo ""
+                    rm -rf "$BASH_DIR/.cache"
+                    bash_typeof ""
+                    break
+                    ;;
+                *)
+                    bash_typeof ""
+                    esac
+            done
+            ;;
         "fetch")
             echo " _____                      _____ _      _____  _____  "
             echo " |  __ \                    / ____| |    |_   _|/ ____| "
@@ -770,7 +788,7 @@ function bash_help()
     echo "        download-gm (-g) | gamemode       Download a gamemode."
     echo "        download-pcc(-p) | pawncc         Download pawncc."
     echo "        clear       (-C) | clear          Clear the screen."
-    echo "        checksums   (-S) | checksums      Generate or verify checksums."
+    echo "        checksums   (-X) | checksums      Generate or verify checksums."
     echo "        folder-check(-F) | check          Check a folder's integrity."
     echo "        vscode-tasks(-V) | tasks          Generate VSCode tasks."
     echo "        type-file   (-T) | type           Display file type."
@@ -778,10 +796,11 @@ function bash_help()
     echo "        kill-bash   (-K) | kill           Kill a command."
     echo "        directory   (-D) | directory      Change or display the current directory."
     echo "        version     (-v) | version        Display tool version."
-    echo "        update      (-U) | update         Update the tool."
+    echo "        update      (-S) | update/sync    Update the tool."
     echo "        exit        (-e) | exit           Exit or start a bash shell."
     echo "        chatbot     (-a) | chatbot        Ask an AI for assistance."
     echo "        enter PPM   (-M) | ppm            Enter PawnCLIS Package Manager Mode."
+    echo "        remove cache(-O) | remcac         Remove PawnCLIS Cache."
     echo
     echo "    Package Management:"
     echo "        sync        (-S) | install        Synchronize and install/replace packages. (ppm)"

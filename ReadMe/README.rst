@@ -1,6 +1,6 @@
 PawnCLIS
 ========
-always be updated with ``paw -U``.
+always be updated with ``paw -S``.
 
 Usage Instructions
 ==================
