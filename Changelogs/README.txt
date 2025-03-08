@@ -14,11 +14,11 @@
   Upgrade Package Manager
   Update Package Manager Security
   Remove Package Manager `ppm -u`
-  Added Beta Testing
-  Added Support Args (<args>) for any commands in Beta Testing
+  Added Testing/UnStable
+  Added Support Args (<args>) for any commands in Testing/UnStable
   /2025/03/08/06:xx -> 11:xx/
-  Remove Beta Testing & Stable
-    And Switch Beta to Rolling
+  Remove Testing/UnStable & Stable
+    And Switch Testing/UnStable to Rolling
   Upgrade Package Manager
   Added Module "libppm" & "libpawnclis"
   Update `paw -U` -> Added checking Version.
