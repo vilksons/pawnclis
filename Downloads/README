@@ -1,0 +1,4 @@
+Get-PawnCLIS | Downloads
+-----------------------
+    Linux  : curl -l -o pawnclis https://raw.githubusercontent.com/vilksons/pawnclis/refs/heads/main/Scripts/pawnclis
+    Windows: curl -l -o pawnclis_win https://raw.githubusercontent.com/vilksons/pawnclis/refs/heads/main/Scripts/pawnclis_win

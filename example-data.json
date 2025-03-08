@@ -1,0 +1,13 @@
+{
+    "amx_opt": "-d0 -Z+",
+    "allow_subdir": "/pawno/include",
+
+    "ppm_dir": "pawno",
+    "ppm_subdir": "include",
+    "ppm_type": "urllib3",
+
+    "chatbot_token": "gsk_000000000000000000000000000000000000000000",
+    "chatbot_model": "qwen-2.5-32b",
+    "chatbot_biodata": "You is A.I with name john",
+    "chatbot_json_get": "python3"
+}
