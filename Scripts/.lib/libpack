@@ -78,7 +78,6 @@ function send_compilers_linux()
         echo "[H/h] PawnCC 3.10.3"
         echo "[I/i] PawnCC 3.10.2"
         echo "[J/j] PawnCC 3.10.1"
-        echo "[X/x] PawnCC 3.10.0"
         read -r -p ">> " VERSION_NEED
 
         while true; do
@@ -131,11 +130,6 @@ function send_compilers_linux()
                 [Jj])
                     DOWNLOAD_URL_CURL="https://github.com/pawn-lang/compiler/releases/download/v3.10.1/pawnc-3.10.1-linux.tar.gz"
                     DOWNLOAD_FILE_CURL="pawnc-3.10.1-linux.tar.gz"
-                    break
-                    ;;
-                [Xx])
-                    DOWNLOAD_URL_CURL="https://github.com/pawn-lang/compiler/releases/download/v3.10.0/pawnc-3.10.0-linux.tar.gz"
-                    DOWNLOAD_FILE_CURL="pawnc-3.10.0-linux.tar.gz"
                     break
                     ;;
                 *)
@@ -241,7 +235,6 @@ function send_compilers_win()
         echo "[H/h] PawnCC 3.10.3"
         echo "[I/i] PawnCC 3.10.2"
         echo "[J/j] PawnCC 3.10.1"
-        echo "[X/x] PawnCC 3.10.0"
         read -r -p ">> " VERSION_NEED
 
         while true; do
@@ -294,11 +287,6 @@ function send_compilers_win()
                 [Jj])
                     DOWNLOAD_URL_CURL="https://github.com/pawn-lang/compiler/releases/download/v3.10.1/pawnc-3.10.1-windows.zip"
                     DOWNLOAD_FILE_CURL="pawnc-3.10.1-windows.zip"
-                    break
-                    ;;
-                [Xx])
-                    DOWNLOAD_URL_CURL="https://github.com/pawn-lang/compiler/releases/download/v3.10.0/pawnc-3.10.0-windows.zip"
-                    DOWNLOAD_FILE_CURL="pawnc-3.10.0-windows.zip"
                     break
                     ;;
                 *)
