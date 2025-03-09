@@ -830,34 +830,42 @@ EOF
     esac
 }
 
-function bash_help()
-{
+function bash_help() {
     echo "Usage: paw <command> [<args>]"
-    echo "Commonly used commands can be classified as follows:"
     echo
-    echo "    Basic Operations:"
-    echo "        compile      (-c) | compiles        Compile a project."
-    echo "        running      (-r) | runnning        Check if a process is running."
-    echo "        debugging    (-d) | debug           Start a debugging server."
-    echo "        stop         (-s) | stop            Stop a server."
-    echo "        restart      (-t) | restart         Restart a server"
-    echo "        compile-run  (-u) | crunn           Compile and run a project."
-    echo "        download-gm  (-g) | gamemode/gmodes Download a gamemode."
-    echo "        download-pcc (-p) | pawncc/pcc      Download pawncc."
-    echo "        clear        (-C) | clear/cc        Clear the screen."
-    echo "        checksums    (-X) | checksums/sums  Generate or verify checksums."
-    echo "        folder-check (-F) | fcheck          Check a folder's sa-mp."
-    echo "        vscode-tasks (-V) | tasks           Generate VSCode tasks."
-    echo "        type-file    (-T) | cat             Display file type."
-    echo "        whoami       (-W) | whoami/me/user  Display current user."
-    echo "        kill-bash    (-K) | kill            Kill a command."
-    echo "        directory    (-D) | directory/dir   Change or display the current directory."
-    echo "        version      (-v) | version         Display tool version."
-    echo "        update       (-S) | update/sync     Update the tool."
-    echo "        exit         (-e) | exit/end        Exit or start a bash shell."
-    echo "        chatbot      (-a) | chatbot/ai      Ask an AI for assistance."
-    echo "        enter PPM    (-M) | ppm             Enter PawnCLIS Package Manager Mode."
-    echo "        remove cache (-O) | remcac          Remove PawnCLIS Cache."
+    echo "Commonly used commands are categorized as follows:"
+    echo
+    echo "  Basic Operations:"
+    echo "    compile      (-c)  | compiles        - Compile a project."
+    echo "    running      (-r)  | running         - Check if a process is running."
+    echo "    debugging    (-d)  | debug           - Start a debugging server."
+    echo "    stop         (-s)  | stop            - Stop a server."
+    echo "    restart      (-t)  | restart         - Restart a server."
+    echo "    compile-run  (-u)  | crunn           - Compile and run a project."
+    echo
+    echo "  Downloads:"
+    echo "    download-gm  (-g)  | gamemode/gmodes - Download a gamemode."
+    echo "    download-pcc (-p)  | pawncc/pcc      - Download pawncc."
+    echo
+    echo "  Utilities:"
+    echo "    clear        (-C)  | clear/cc        - Clear the screen."
+    echo "    checksums    (-X)  | checksums/sums  - Generate or verify checksums."
+    echo "    folder-check (-F)  | fcheck          - Check a folder's SA-MP."
+    echo "    vscode-tasks (-V)  | tasks           - Generate VSCode tasks."
+    echo "    type-file    (-T)  | cat             - Display file type."
+    echo "    whoami       (-W)  | whoami/me/user  - Display current user."
+    echo "    kill-bash    (-K)  | kill            - Kill a command."
+    echo "    directory    (-D)  | directory/dir   - Change or display the current directory."
+    echo
+    echo "  System & Maintenance:"
+    echo "    version      (-v)  | version         - Display tool version."
+    echo "    update       (-S)  | update/sync     - Update the tool."
+    echo "    exit         (-e)  | exit/end        - Exit or start a bash shell."
+    echo "    remove cache (-O)  | remcac          - Remove PawnCLIS Cache."
+    echo
+    echo "  Extra Tools:"
+    echo "    chatbot      (-a)  | chatbot/ai      - Ask an AI for assistance."
+    echo "    enter PPM    (-M)  | ppm             - Enter PawnCLIS Package Manager Mode."
     echo
 }
 
