@@ -1,0 +1,12 @@
+{
+    "amx_opt": "-d0",
+
+    "ppm_dir": "pawno",
+    "ppm_subdir": "include",
+    "ppm_type": "urllib3",
+
+    "chatbot_token": "",
+    "chatbot_model": "",
+    "chatbot_biodata": "",
+    "chatbot_json_get": ""
+}

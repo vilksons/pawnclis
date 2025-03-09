@@ -356,7 +356,7 @@ fi
             bash_typeof2 ""
             ;;
        "$PACMAN -E" | "end")
-            bash_typeof2 ""
+            bash_typeof ""
             ;;
         *)
             echo "error: $OPBASH_PF: command not found"

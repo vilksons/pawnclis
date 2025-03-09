@@ -37,7 +37,7 @@ BASH_DIR="$(dirname "$0")"
 BASH_TITLE=""
 BASH_NAME="pawnclis"
 BASH_SERVER="samp03svr"
-BASH_BUILD="2025-03-09"
+BASH_BUILD="2025-03-10"
 
 VERSION=$BASH_BUILD
 LICENSES="GPL v2.0 Only"
@@ -487,7 +487,7 @@ bash_Paw() {
     {
       "label": "Run PawnCLIS",
       "type": "process",
-      "command": "\${workspaceFolder}/$BASH_NAME",
+      "command": "./$BASH_NAME"
       "group": {
         "kind": "build",
         "isDefault": true
@@ -609,7 +609,7 @@ EOF
             else
                 echo "The version is the latest!."
                 echo 
-                read -r -p ":: Do you want to continue Sync PawnCLIS [Y/N] " PERMISSION_NEED
+                read -r -p ":: Do you want to continue Sync PawnCLIS [y/N] " PERMISSION_NEED
 
                 while true; do
                 case "$PERMISSION_NEED" in
@@ -823,15 +823,97 @@ EOF
             bash_typeof2 ""
             bash_help2 ""
             ;;
-        "help")
+        "help"* | "$BASH_OPTION -h"* | "$BASH_OPTION --h"*)
             BASH_TITLE="help"
             bash_title "$SHUSERS:~/ $BASH_TITLE"
 
-            bash_help
+            local FOR_FIND_ARGS="${OPBASH_F#"$BASH_OPTION -h "}"
+            local FOR_FIND_ARGS="${FOR_FIND_ARGS#help }"
+            local FOR_FIND_ARGS="${FOR_FIND_ARGS#"$BASH_OPTION --h "}"
+
+            if [[ -n "$FOR_FIND_ARGS" ]]; then
+                if [ "$FOR_FIND_ARGS" == "compiles" ]; then
+                    echo ":: Compile a project"
+                    echo " -> Usage: paw -c | compiles | (+) [<args>] [target]"
+                elif [ "$FOR_FIND_ARGS" == "running" ]; then
+                    echo ":: Running a project"
+                    echo " -> Usage: paw -r | running | (+) [<args>] [target]"
+                elif [ "$FOR_FIND_ARGS" == "debug" ]; then
+                    echo ":: Debug a project"
+                    echo " -> Usage: paw -d | debug | (+) [<args>] [target]"
+                elif [ "$FOR_FIND_ARGS" == "stop" ]; then
+                    echo ":: Stop all Server Uptime"
+                    echo " -> Usage: paw -s | stop"
+                elif [ "$FOR_FIND_ARGS" == "restart" ]; then
+                    echo ":: Restart all Server"
+                    echo " -> Usage: paw -t | restart"
+                elif [ "$FOR_FIND_ARGS" == "crunn" ]; then
+                    echo ":: Compile & Running a project"
+                    echo " -> Usage: paw -u | crunn"
+                elif [ "$FOR_FIND_ARGS" == "gamemodes" ]; then
+                    echo ":: Download GameModes SA-MP with Selection"
+                    echo " -> Usage: paw -g | gamemodes | gmodes"
+                elif [ "$FOR_FIND_ARGS" == "pawncc" ]; then
+                    echo ":: Download PawnCC SA-MP with Selection"
+                    echo " -> Usage: paw -p | pawncc | pcc"
+                elif [ "$FOR_FIND_ARGS" == "clear" ]; then
+                    echo ":: Clear Screen Terminal"
+                    echo " -> Usage: paw -C | clear | cc"
+                elif [ "$FOR_FIND_ARGS" == "checksums" ]; then
+                    echo ":: Checksums of PawnCLIS"
+                    echo " -> Usage: paw -X | checksums | sums | (+) [<args>] \"sha1\" \"sha256\" \"md5\" default=ALL"
+                elif [ "$FOR_FIND_ARGS" == "fcheck" ]; then
+                    echo ":: Checks Directory of SA-MP"
+                    echo " -> Usage: paw -F | fcheck"
+                elif [ "$FOR_FIND_ARGS" == "tasks" ]; then
+                    echo ":: Generate VSCode Tasks"
+                    echo " -> Usage: paw -V | tasks"
+                elif [ "$FOR_FIND_ARGS" == "cat" ]; then
+                    echo ":: Display a files to PawnCLIS Terminal"
+                    echo " -> Usage: paw -T | cat"
+                elif [ "$FOR_FIND_ARGS" == "whoami" ]; then
+                    echo ":: Display Whoami"
+                    echo " -> Usage: paw -W | whoami | me | user"
+                elif [ "$FOR_FIND_ARGS" == "kill" ]; then
+                    echo ":: Kill a PawnCLIS Terminal"
+                    echo " -> Usage: paw -K | kill"
+                elif [ "$FOR_FIND_ARGS" == "directory" ]; then
+                    echo ":: Change Terminal Directory (OP.1) or Display Terminal list files/dir (OP.2)"
+                    echo " -> Usage: paw -D (OP.1) | directory - dir (OP.2)"
+                elif [ "$FOR_FIND_ARGS" == "version" ]; then
+                    echo ":: Display a PawnCLIS Version (Build Date)"
+                    echo " -> Usage: paw -v | version"
+                elif [ "$FOR_FIND_ARGS" == "update" ]; then
+                    echo ":: Update/Upgrade/Sync PawnCLIS Shell up-to-date"
+                    echo " -> Usage: paw -S | update | sync"
+                elif [ "$FOR_FIND_ARGS" == "exit" ]; then
+                    echo ":: Exit/End PawnCLIS Terminal"
+                    echo " -> Usage: paw -e | exit | end"
+                elif [ "$FOR_FIND_ARGS" == "remcac" ]; then
+                    echo ":: Remove cache \".cache\" PawnCLIS"
+                    echo " -> Usage: paw -O | remcac"
+                elif [ "$FOR_FIND_ARGS" == "chatbot" ]; then
+                    echo ":: Chatbot Terminal"
+                    echo " -> Usage: paw -a | chatbot | ai | (+) [<args>] [question]"
+                elif [ "$FOR_FIND_ARGS" == "nano" ]; then
+                    echo ":: GNU/Nano Editor"
+                    echo " -> Usage: paw -N | nano"
+                elif [ "$FOR_FIND_ARGS" == "ppm" ]; then
+                    echo ":: PawnCLIS Paw Mode to PPM Mode"
+                    echo " -> Usage: paw -M | ppm"
+                else
+                    echo "Invalid!.. Please Use:"
+                    echo " compiles, running, debug, stop, restart"
+                    echo " crunn, gamemodes, pawncc, clear, checksums"
+                    echo " fcheck, tasks, cat, whoami, kill, directory"
+                    echo " update, exit, remcac, chatbot, nano, ppm, version"
+                fi
+            fi
+
             bash_typeof ""
             ;;
         "$BASH_OPTION")
-            bash_help
+            bash_help ""
             bash_typeof ""
             ;;
         "")
@@ -847,56 +929,23 @@ EOF
     esac
 }
 
-function bash_help() {
-    echo "Usage: paw <command> [<args>]"
-    echo
-    echo "Commonly used commands are categorized as follows:"
-    echo
-    echo "  Basic Operations:"
-    echo "    compile      (-c)  | compiles        - Compile a project."
-    echo "    running      (-r)  | running         - Check if a process is running."
-    echo "    debugging    (-d)  | debug           - Start a debugging server."
-    echo "    stop         (-s)  | stop            - Stop a server."
-    echo "    restart      (-t)  | restart         - Restart a server."
-    echo "    compile-run  (-u)  | crunn           - Compile and run a project."
-    echo
-    echo "  Downloads:"
-    echo "    download-gm  (-g)  | gamemode/gmodes - Download a gamemode."
-    echo "    download-pcc (-p)  | pawncc/pcc      - Download pawncc."
-    echo
-    echo "  Utilities:"
-    echo "    clear        (-C)  | clear/cc        - Clear the screen."
-    echo "    checksums    (-X)  | checksums/sums  - Generate or verify checksums."
-    echo "    folder-check (-F)  | fcheck          - Check a folder's SA-MP."
-    echo "    vscode-tasks (-V)  | tasks           - Generate VSCode tasks."
-    echo "    type-file    (-T)  | cat             - Display file type."
-    echo "    whoami       (-W)  | whoami/me/user  - Display current user."
-    echo "    kill-bash    (-K)  | kill            - Kill a command."
-    echo "    directory    (-D)  | directory/dir   - Change or display the current directory."
-    echo
-    echo "  System & Maintenance:"
-    echo "    version      (-v)  | version         - Display tool version."
-    echo "    update       (-S)  | update/sync     - Update the tool."
-    echo "    exit         (-e)  | exit/end        - Exit or start a bash shell."
-    echo "    remove cache (-O)  | remcac          - Remove PawnCLIS Cache."
-    echo
-    echo "  Extra Tools:"
-    echo "    chatbot      (-a)  | chatbot/ai      - Ask an AI for assistance."
-    echo "    GNU Nano     (-N)  | nano            - Open GNU Nano Editor."
-    echo "    enter PPM    (-M)  | ppm             - Enter PawnCLIS Package Manager Mode."
-    echo
+function bash_help()
+{
+    echo "Usage: paw <command> | help | -h | --h | [<commands>]"
+    echo "Commands:"
+    echo " compiles, running, debug, stop, restart"
+    echo " crunn, gamemodes, pawncc, clear, checksums"
+    echo " fcheck, tasks, cat, whoami, kill, directory"
+    echo " update, exit, remcac, chatbot, nano, ppm, version"
 }
 
 function bash_help2()
 {
     echo "Usage: paw <command> [<args>]"
-    echo "Commonly used commands can be classified as follows:"
-    echo
-    echo "    Package Management:"
-    echo "        sync        (-S) | install    Synchronize and install/reinstall packages. (ppm)"
-    echo "        remove      (-r) | remove     Remove packages. (ppm)"
-    echo "        end         (-E) | end        End PawnCLIS Package Manager Mode. (ppm)"
-    echo
+    echo "Commands:"
+    echo " -S/install - Install/Reinstall Packages"
+    echo " -r/remove  - Remove Packages"
+    echo " -E/end     - End PPM Mode"
 }
 
 function bash_end() {
