@@ -35,7 +35,7 @@ _DIR2=$(awk -F'"' '/"ppm_subdir"/ {print $4}' data.json)
 
 BASH_DIR="$(dirname "$0")"
 BASH_TITLE=""
-BASH_NAME="pawnclis"
+BASH_NAME="pawnclis_win"
 BASH_SERVER="samp-server.exe"
 BASH_BUILD="2025-03-10"
 
@@ -44,9 +44,11 @@ LICENSES="GPL v2.0 Only"
 
 COMPILER_MODE="false"
 COMPILER_PAWNCC=""
-PAWNCCS="pawncc.exe"
+PAWNCCS="pawncc"
 
 TYPEOF_VAR_NOTICE=0
+
+VAR_SERVERS=0
 
 URL_DOWNLOAD="https://raw.githubusercontent.com/vilksons/pawnclis/refs/heads/main/Scripts/$BASH_NAME"
 
@@ -93,6 +95,7 @@ function bash_coltext_r() {
 resetVariable() {
     COMPILER_MODE="false"
     COMPILER_PAWNCC=""
+    VAR_SERVERS=0
 }
 
 # shellcheck source=/dev/null
@@ -286,37 +289,8 @@ bash_Paw() {
                 pawnclis_servers ""
             fi
 
-            if [ ! -f "server.cfg" ]; then
-                echo "server.cfg not found!"
-                bash_end ""
-            fi
-
-            mv server.cfg server.cfg.bak
-
-            awk -v new_gamemode="$FOR_FIND_INPUT" '
-            /^gamemode0 / {$2=new_gamemode} 1' server.cfg.bak > server.cfg
-
-            echo ":: New server.cfg created with gamemode: $FOR_FIND_INPUT"
-
-            if [ ! -f "$BASH_DIR/$BASH_SERVER" ]; then
-                echo -n "$(bash_coltext_r "E: ")"
-                echo "$BASH_SERVER not found!. You can get this in \`paw -g\`"
-
-                read -r -n 1 -s
-                clear
-
-                bash_typeof ""
-            else
-                chmod 777 "$BASH_SERVER"
-                ./$BASH_SERVER &
-                sleep 1
-                cat server_log.txt
-                echo
-            fi
-
-            rm -f server.cfg
-            mv server.cfg.bak server.cfg
-            echo "Original server.cfg has been restored."
+            VAR_SERVERS=1
+            _pawnclis_servers "$FOR_FIND_INPUT"
 
             bash_end ""
             ;;
@@ -346,38 +320,8 @@ bash_Paw() {
                 read -r -p ">>> " FOR_FIND_INPUT
             fi
 
-            if [ ! -f "server.cfg" ]; then
-                echo "server.cfg not found!"
-                bash_end ""
-            fi
-
-            mv server.cfg server.cfg.bak
-
-            awk -v new_gamemode="$FOR_FIND_INPUT" '
-            /^gamemode0 / {$2=new_gamemode} 1' server.cfg.bak > server.cfg
-
-            echo "New server.cfg created with gamemode: $FOR_FIND_INPUT"
-
-            if [ ! -f "$BASH_DIR/$BASH_SERVER" ]; then
-                echo -n "$(bash_coltext_r "E: ")"
-                echo "$BASH_SERVER not found!. You can get this in \`paw -g\`"
-
-                read -r -n 1 -s
-                clear
-
-                bash_typeof ""
-            else
-                chmod 777 "$BASH_SERVER"
-                ./$BASH_SERVER &
-                sleep 1
-                cat server_log.txt
-                echo
-                killall -15 "$BASH_SERVER" > /dev/null 2>&1
-            fi
-
-            rm -f server.cfg
-            mv server.cfg.bak server.cfg
-            echo "Original server.cfg has been restored."
+            VAR_SERVERS=2
+            _pawnclis_servers "$FOR_FIND_INPUT"
 
             bash_end ""
             ;;
@@ -739,23 +683,6 @@ EOF
             
             bash_end ""
             ;;
-        "$BASH_OPTION -N"* | "nano"*)
-            BASH_TITLE="GNU Nano Editor"
-            echo "$SHUSERS:~/ $BASH_TITLE"
-            
-            local FOR_FIND_ARGS="${OPBASH_F#"$BASH_OPTION -N "}"
-            local FOR_FIND_ARGS="${FOR_FIND_ARGS#nano }"
-
-            if [[ -n "$FOR_FIND_ARGS" ]]; then
-                FILE_PATH="$FOR_FIND_ARGS"
-            else
-                echo ":: Enter the File:"
-                read -r -p ">>> " FILE_PATH
-            fi
-
-            nano "$FILE_PATH"
-            bash_end ""
-            ;;
         "$BASH_OPTION -O" | "remcac")
             BASH_TITLE="Remove Cache"
             echo "$SHUSERS:~/ $BASH_TITLE"
@@ -903,7 +830,7 @@ EOF
                     echo " compiles, running, debug, stop, restart"
                     echo " crunn, gamemodes, pawncc, clear, checksums"
                     echo " fcheck, tasks, cat, whoami, kill, directory"
-                    echo " update, exit, remcac, chatbot, nano, ppm, version"
+                    echo " update, exit, remcac, chatbot, ppm, version"
                 fi
             fi
 
@@ -966,6 +893,8 @@ function pawnclis_servers() {
     if [ -f "$BASH_DIR/server_log.txt" ]; then
         rm -rf "$BASH_DIR/server_log.txt"
     fi
+
+    cd "$BASH_DIR" || echo
 
     chmod 777 $BASH_SERVER
     ./$BASH_SERVER &
@@ -1090,6 +1019,45 @@ function bash_cache_compiler() {
     mv "$_cache_compiler" "$cache_compiler" > /dev/null
 }
 
+function _pawnclis_servers() {
+    local FOR_FIND_INPUT=$1
+    if [ ! -f "server.cfg" ]; then
+        echo "server.cfg not found!"
+        bash_end ""
+    fi
+
+    mv server.cfg server.cfg.bak
+
+    awk -v new_gamemode="$FOR_FIND_INPUT" '
+    /^gamemode0 / {$2=new_gamemode} 1' server.cfg.bak > server.cfg
+
+    echo "New server.cfg created with gamemode: $FOR_FIND_INPUT"
+
+    if [ ! -f "$BASH_DIR/$BASH_SERVER" ]; then
+        echo -n "$(bash_coltext_r "E: ")"
+        echo "$BASH_SERVER not found!. You can get this in \`paw -g\`"
+
+        read -r -n 1 -s
+        clear
+
+        bash_typeof ""
+    else
+        chmod 777 "$BASH_SERVER"
+        ./$BASH_SERVER &
+        sleep 1
+        cat server_log.txt
+        echo
+
+        if [ $VAR_SERVERS == 2 ]; then
+            killall -15 "$BASH_SERVER" > /dev/null 2>&1
+        fi
+    fi
+
+    rm -f server.cfg
+    mv server.cfg.bak server.cfg
+    echo "Original server.cfg has been restored."
+
+}
 function bash_check_dir() {
     local folder=$1
     if [ -d "$folder" ]; then

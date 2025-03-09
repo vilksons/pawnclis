@@ -19,7 +19,7 @@ Before Step, Download this:
 
 **Arch Linux** ::
 
-    sudo pacman -Syu && sudo pacman -S lib32-glibc
+    sudo pacman -Syu && sudo pacman -S lib32-glibc lib32-gcc-libs
 
 **OpenSUSE** ::
 
