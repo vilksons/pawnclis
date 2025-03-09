@@ -39,7 +39,6 @@ This file should contain the necessary configuration settings. Below is an examp
 
     {
         "amx_opt": "-d2 -Z+",
-        "allow_subdir": "/pawno/include",
 
         "ppm_dir": "pawno",
         "ppm_subdir": "include",
@@ -54,7 +53,6 @@ This file should contain the necessary configuration settings. Below is an examp
 Configuration Details
 ---------------------
 - ``amx_opt``: Compilation optimization options (e.g., ``-d0`` for debugging).
-- ``allow_subdir``: Defines the allowed subdirectory path for includes.
 - ``ppm_dir`` & ``ppm_subdir``: Specifies the directory structure for package management.
 - ``ppm_type``: Determines the package manager type. You can choose from the following options:
   - ``curl``

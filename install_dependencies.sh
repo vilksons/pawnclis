@@ -13,7 +13,7 @@ else
     bash -
 fi
 
-if ! command -v sudo &>/dev/null; then
+if ! command -v sudo &> /dev/null; then
     echo "sudo not found. Attempting to install..."
     if [[ "$OS" == "arch" || "$OS" == "manjaro" ]]; then
         su -c "pacman -Sy --noconfirm sudo"

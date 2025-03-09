@@ -1,11 +1,11 @@
 #!/bin/bash
 
-BASH_SEND_SAMP_STATUS=0
-BASH_SEND_PAWNCC_STATUS=0
+# Copyright (c) GPL v2.0 & ("maintainers") & (“CompuPhase”) & ("GNU - GNU/Bash")
+# if "Your" Copy/Modified this Programs. don't remove the authors ("maintainers") or contributors.
 
 function send_samp_linux()
 {
-    echo "Do you want to continue downloading SA-MP? (Yy/Nn)"
+    echo ":: Do you want to continue downloading SA-MP? (Yy/Nn)"
     read -r -p ">> " SEL_C
     if [[ "$SEL_C" =~ ^[Yy]$ ]]; then
         cd "$BASH_DIR" || bash_end ""
@@ -13,10 +13,10 @@ function send_samp_linux()
         echo "[A/a] SA-MP 0.3.7 R2-1-1"
         echo "[B/b] SA-MP 0.3.7 R3"
         echo "[C/c] SA-MP 0.3.DL R1"
-        read -r -p ">> " _VERSION_
+        read -r -p ">> " VERSION_NEED
         
         while true; do
-            case "$_VERSION_" in
+            case "$VERSION_NEED" in
                 [Aa])
                     DOWNLOAD_URL_CURL="https://files.sa-mp.app/samp037svr_R2-2-1.tar.gz"
                     DOWNLOAD_FILE_CURL="samp037svr_R2-2-1.tar.gz"
@@ -34,8 +34,8 @@ function send_samp_linux()
                     ;;
                 *)
                     echo -n "$(bash_coltext_r "E: ")"
-                    echo "Invalid selection. Please enter A, B, or C."
-                    read -r -p ">> " _VERSION_
+                    echo "Invalid selection. Please enter the Number!"
+                    read -r -p ">> " VERSION_NEED
                     ;;
             esac
         done
@@ -45,13 +45,7 @@ function send_samp_linux()
             echo -n "$(bash_coltext_r "fail: ")"
             echo "Failed to download the file.."
             
-            if [ $BASH_SEND_SAMP_STATUS == 1 ]; then
-                bash_servers
-            elif [ $BASH_SEND_SAMP_STATUS == 2 ]; then
-                bash_debug
-            elif [ $BASH_SEND_SAMP_STATUS == 0 ]; then
-                bash_end ""
-            fi
+            bash_end ""
         else
             tar -xzvf "$DOWNLOAD_FILE_CURL" -C "$BASH_DIR" --strip-components=1
 
@@ -60,28 +54,16 @@ function send_samp_linux()
             echo
             echo "Please rename \"rcon_password\" before running this command again"
 
-            if [ $BASH_SEND_SAMP_STATUS == 1 ]; then
-                bash_servers
-            elif [ $BASH_SEND_SAMP_STATUS == 2 ]; then
-                bash_debug
-            elif [ $BASH_SEND_SAMP_STATUS == 0 ]; then
-                bash_end ""
-            fi
-        fi
-    else
-        if [ $BASH_SEND_SAMP_STATUS == 1 ]; then
-            bash_servers
-        elif [ $BASH_SEND_SAMP_STATUS == 2 ]; then
-            bash_debug
-        elif [ $BASH_SEND_SAMP_STATUS == 0 ]; then
             bash_end ""
         fi
+    else
+        bash_end ""
     fi
 }
 
 function send_compilers_linux()
 {
-    echo "Do you want to continue downloading PawnCC? (Yy/Nn)"
+    echo ":: Do you want to continue downloading PawnCC? (Yy/Nn)"
     read -r -p ">> " SEL_C
     if [[ "$SEL_C" =~ ^[Yy]$ ]]; then
         cd "$BASH_DIR" || bash_end ""
@@ -93,10 +75,14 @@ function send_compilers_linux()
         echo "[E/e] PawnCC 3.10.6"
         echo "[F/f] PawnCC 3.10.5"
         echo "[G/g] PawnCC 3.10.4"
-        read -r -p ">> " _VERSION_
+        echo "[H/h] PawnCC 3.10.3"
+        echo "[I/i] PawnCC 3.10.2"
+        echo "[J/j] PawnCC 3.10.1"
+        echo "[X/x] PawnCC 3.10.0"
+        read -r -p ">> " VERSION_NEED
 
         while true; do
-            case "$_VERSION_" in
+            case "$VERSION_NEED" in
                 [Aa])
                     DOWNLOAD_URL_CURL="https://github.com/pawn-lang/compiler/releases/download/v3.10.10/pawnc-3.10.10-linux.tar.gz"
                     DOWNLOAD_FILE_CURL="pawnc-3.10.10-linux.tar.gz"
@@ -132,10 +118,30 @@ function send_compilers_linux()
                     DOWNLOAD_FILE_CURL="pawnc-3.10.4-linux.tar.gz"
                     break
                     ;;
+                [Hh])
+                    DOWNLOAD_URL_CURL="https://github.com/pawn-lang/compiler/releases/download/v3.10.3/pawnc-3.10.3-linux.tar.gz"
+                    DOWNLOAD_FILE_CURL="pawnc-3.10.3-linux.tar.gz"
+                    break
+                    ;;
+                [Ii])
+                    DOWNLOAD_URL_CURL="https://github.com/pawn-lang/compiler/releases/download/v3.10.2/pawnc-3.10.2-linux.tar.gz"
+                    DOWNLOAD_FILE_CURL="pawnc-3.10.2-linux.tar.gz"
+                    break
+                    ;;
+                [Jj])
+                    DOWNLOAD_URL_CURL="https://github.com/pawn-lang/compiler/releases/download/v3.10.1/pawnc-3.10.1-linux.tar.gz"
+                    DOWNLOAD_FILE_CURL="pawnc-3.10.1-linux.tar.gz"
+                    break
+                    ;;
+                [Xx])
+                    DOWNLOAD_URL_CURL="https://github.com/pawn-lang/compiler/releases/download/v3.10.0/pawnc-3.10.0-linux.tar.gz"
+                    DOWNLOAD_FILE_CURL="pawnc-3.10.0-linux.tar.gz"
+                    break
+                    ;;
                 *)
                     echo -n "$(bash_coltext_r "E: ")"
-                    echo "Invalid selection. Please enter A, B, C, D, or E, F, G."
-                    read -r -p ">> " _VERSION_
+                    echo "Invalid selection. Please enter the Number!"
+                    read -r -p ">> " VERSION_NEED
                     ;;
             esac
         done
@@ -145,11 +151,7 @@ function send_compilers_linux()
             echo -n "$(bash_coltext_r "fail: ")"
             echo "Failed to download the file.."
 
-            if [ $BASH_SEND_PAWNCC_STATUS == 1 ]; then
-                bash_compilers
-            elif [ $BASH_SEND_PAWNCC_STATUS == 0 ]; then
-                bash_end ""
-            fi
+            bash_end ""
         else
             tar -xzvf "$DOWNLOAD_FILE_CURL" -C "$BASH_DIR" --strip-components=1
 
@@ -157,24 +159,16 @@ function send_compilers_linux()
             echo -n "$(bash_coltext_y "Download completed successfully.")"
             echo
 
-            if [ $BASH_SEND_PAWNCC_STATUS == 1 ]; then
-                bash_compilers
-            elif [ $BASH_SEND_PAWNCC_STATUS == 0 ]; then
-                bash_end ""
-            fi
-        fi
-    else
-        if [ $BASH_SEND_PAWNCC_STATUS == 1 ]; then
-            bash_compilers
-        elif [ $BASH_SEND_PAWNCC_STATUS == 0 ]; then
             bash_end ""
         fi
+    else
+        bash_end ""
     fi
 }
 
 function send_samp_win()
 {
-    echo "Do you want to continue downloading SA-MP? (Yy/Nn)"
+    echo ":: Do you want to continue downloading SA-MP? (Yy/Nn)"
     read -r -p ">> " SEL_C
     if [[ "$SEL_C" =~ ^[Yy]$ ]]; then
         cd "$BASH_DIR" || bash_end ""
@@ -182,10 +176,10 @@ function send_samp_win()
         echo "[A/a] SA-MP 0.3.7 R2-1-1"
         echo "[B/b] SA-MP 0.3.7 R3"
         echo "[C/c] SA-MP 0.3.DL R1"
-        read -r -p ">> " _VERSION_
+        read -r -p ">> " VERSION_NEED
 
         while true; do
-            case "$_VERSION_" in
+            case "$VERSION_NEED" in
                 [Aa])
                     DOWNLOAD_URL_CURL="https://files.sa-mp.app/samp037_svr_R2-1-1_win32.zip"
                     DOWNLOAD_FILE_CURL="samp037_svr_R2-1-1_win32.zip"
@@ -203,8 +197,8 @@ function send_samp_win()
                     ;;
                 *)
                     echo -n "$(bash_coltext_r "E: ")"
-                    echo "Invalid selection. Please enter A, B, or C."
-                    read -r -p ">> " _VERSION_
+                    echo "Invalid selection. Please enter the Number!"
+                    read -r -p ">> " VERSION_NEED
                     ;;
             esac
         done
@@ -214,13 +208,7 @@ function send_samp_win()
             echo -n "$(bash_coltext_r "fail: ")"
             echo "Failed to download the file.."
 
-            if [ $BASH_SEND_SAMP_STATUS == 1 ]; then
-                bash_servers
-            elif [ $BASH_SEND_SAMP_STATUS == 2 ]; then
-                bash_debug
-            elif [ $BASH_SEND_SAMP_STATUS == 0 ]; then
-                bash_end ""
-            fi
+            bash_end ""
         else
             unzip -q "$DOWNLOAD_FILE_CURL" -d "$BASH_DIR"
 
@@ -229,28 +217,16 @@ function send_samp_win()
             echo
             echo "Please rename \"rcon_password\" before running this command again"
 
-            if [ $BASH_SEND_SAMP_STATUS == 1 ]; then
-                bash_servers
-            elif [ $BASH_SEND_SAMP_STATUS == 2 ]; then
-                bash_debug
-            elif [ $BASH_SEND_SAMP_STATUS == 0 ]; then
-                bash_end ""
-            fi
-        fi
-    else
-        if [ $BASH_SEND_SAMP_STATUS == 1 ]; then
-            bash_servers
-        elif [ $BASH_SEND_SAMP_STATUS == 2 ]; then
-            bash_debug
-        elif [ $BASH_SEND_SAMP_STATUS == 0 ]; then
             bash_end ""
         fi
+    else
+        bash_end ""
     fi
 }
 
 function send_compilers_win()
 {
-    echo "Do you want to continue downloading PawnCC? (Yy/Nn)"
+    echo ":: Do you want to continue downloading PawnCC? (Yy/Nn)"
     read -r -p ">> " SEL_C
     if [[ "$SEL_C" =~ ^[Yy]$ ]]; then
         cd "$BASH_DIR" || bash_end ""
@@ -262,10 +238,14 @@ function send_compilers_win()
         echo "[E/e] PawnCC 3.10.6"
         echo "[F/f] PawnCC 3.10.5"
         echo "[G/g] PawnCC 3.10.4"
-        read -r -p ">> " _VERSION_
+        echo "[H/h] PawnCC 3.10.3"
+        echo "[I/i] PawnCC 3.10.2"
+        echo "[J/j] PawnCC 3.10.1"
+        echo "[X/x] PawnCC 3.10.0"
+        read -r -p ">> " VERSION_NEED
 
         while true; do
-            case "$_VERSION_" in
+            case "$VERSION_NEED" in
                 [Aa])
                     DOWNLOAD_URL_CURL="https://github.com/pawn-lang/compiler/releases/download/v3.10.10/pawnc-3.10.10-windows.zip"
                     DOWNLOAD_FILE_CURL="pawnc-3.10.10-windows.zip"
@@ -301,10 +281,30 @@ function send_compilers_win()
                     DOWNLOAD_FILE_CURL="pawnc-3.10.4-windows.zip"
                     break
                     ;;
+                [Hh])
+                    DOWNLOAD_URL_CURL="https://github.com/pawn-lang/compiler/releases/download/v3.10.3/pawnc-3.10.3-windows.zip"
+                    DOWNLOAD_FILE_CURL="pawnc-3.10.3-windows.zip"
+                    break
+                    ;;
+                [Ii])
+                    DOWNLOAD_URL_CURL="https://github.com/pawn-lang/compiler/releases/download/v3.10.2/pawnc-3.10.2-windows.zip"
+                    DOWNLOAD_FILE_CURL="pawnc-3.10.2-windows.zip"
+                    break
+                    ;;
+                [Jj])
+                    DOWNLOAD_URL_CURL="https://github.com/pawn-lang/compiler/releases/download/v3.10.1/pawnc-3.10.1-windows.zip"
+                    DOWNLOAD_FILE_CURL="pawnc-3.10.1-windows.zip"
+                    break
+                    ;;
+                [Xx])
+                    DOWNLOAD_URL_CURL="https://github.com/pawn-lang/compiler/releases/download/v3.10.0/pawnc-3.10.0-windows.zip"
+                    DOWNLOAD_FILE_CURL="pawnc-3.10.0-windows.zip"
+                    break
+                    ;;
                 *)
                     echo -n "$(bash_coltext_r "E: ")"
-                    echo "Invalid selection. Please enter A, B, C, D, or E, F, G."
-                    read -r -p ">> " _VERSION_
+                    echo "Invalid selection. Please enter the Number!"
+                    read -r -p ">> " VERSION_NEED
                     ;;
             esac
         done
@@ -314,11 +314,7 @@ function send_compilers_win()
             echo -n "$(bash_coltext_r "fail: ")"
             echo "Failed to download the file.."
 
-            if [ $BASH_SEND_PAWNCC_STATUS == 1 ]; then
-                bash_compilers
-            elif [ $BASH_SEND_PAWNCC_STATUS == 0 ]; then
-                bash_end ""
-            fi
+            bash_end ""
         else
             unzip -q "$DOWNLOAD_FILE_CURL" -d "$BASH_DIR"
 
@@ -326,17 +322,9 @@ function send_compilers_win()
             echo -n "$(bash_coltext_y "Download completed successfully.")"
             echo
 
-            if [ $BASH_SEND_PAWNCC_STATUS == 1 ]; then
-                bash_compilers
-            elif [ $BASH_SEND_PAWNCC_STATUS == 0 ]; then
-                bash_end ""
-            fi
-        fi
-    else
-        if [ $BASH_SEND_PAWNCC_STATUS == 1 ]; then
-            bash_compilers
-        elif [ $BASH_SEND_PAWNCC_STATUS == 0 ]; then
             bash_end ""
         fi
+    else
+        bash_end ""
     fi
 }

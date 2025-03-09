@@ -1,6 +1,5 @@
 {
     "amx_opt": "-d0 -Z+",
-    "allow_subdir": "/pawno/include",
 
     "ppm_dir": "pawno",
     "ppm_subdir": "include",

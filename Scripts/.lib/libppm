@@ -1,16 +1,19 @@
 #!/bin/bash
 
+# Copyright (c) GPL v2.0 & ("maintainers") & (“CompuPhase”) & ("GNU - GNU/Bash")
+# if "Your" Copy/Modified this Programs. don't remove the authors ("maintainers") or contributors.
+
 ALLOW_INC_DIR="$_DIR1/$_DIR2"
 PPM_INSTALLER=$(grep '"ppm_type"' data.json | sed -E 's/.*"ppm_type": "(.*)".*/\1/')
 
 function bash_typeof2() {
     BASH_TITLE="PPM Mode"
-    bash_title "$SHUSERS:~/$BASH_TITLE"
+    bash_title "$BASH_TITLE"
 
     echo -n "$(bash_coltext_y "$SHUSERS")"
     echo -n ":~$ "
     read -r OPBASH_PF
-    packageManager
+    packageManager ""
 }
 
 packageManager()
@@ -107,7 +110,7 @@ EOF
                     elif [[ "$PPM_REPOSITORY_URL" == *"sourceforge.net"* ]]; then
                         PPM_API_URL="https://sourceforge.net/projects/$PPM_REPO_NAME/files/latest/download"
                     else
-                        echo "Unsupported repository host."
+                        echo "Unsupported repository host $PPM_REPOSITORY_URL -> only github/gitlab/sourceforge"
                         bash_typeof2 ""
                     fi
                 
@@ -122,7 +125,7 @@ EOF
                     elif [[ "$PPM_REPOSITORY_URL" == *"sourceforge.net"* ]]; then
                         PPM_ARCHIVE_URL="https://sourceforge.net/projects/$PPM_REPO_NAME/files/latest/download"
                     else
-                        echo "Unsupported repository host."
+                        echo "Unsupported repository host $PPM_REPOSITORY_URL -> only github/gitlab/sourceforge"
                         bash_typeof2 ""
                     fi
                 
@@ -198,7 +201,7 @@ fi
                 echo "Extraction Directory.."
 
                 find "$PPM_EXTRACT_DIR" -type f -name "*.inc" | while IFS= read -r inc_file; do
-                    rel_path=$(realpath --relative-to="$PPM_EXTRACT_DIR" "$inc_file" 2>/dev/null || echo "$inc_file")
+                    rel_path=$(realpath --relative-to="$PPM_EXTRACT_DIR" "$inc_file" 2> /dev/null || echo "$inc_file")
 
                     if [[ "$rel_path" =~ (^|/)include/ ]]; then
                         rel_path="${rel_path#*include/}"
@@ -333,6 +336,10 @@ fi
             
             bash_typeof2 ""
             ;;
+        "$BASH_OPTION -C" | "clear" | "cc")
+            clear; echo -ne "\033[3J"
+            bash_typeof2 ""
+            ;;
         "$PACMAN")
             bash_help2
             bash_typeof2 ""
@@ -349,7 +356,7 @@ fi
             bash_typeof2 ""
             ;;
        "$PACMAN -E" | "end")
-            bash_typeof ""
+            bash_typeof2 ""
             ;;
         *)
             echo "error: $OPBASH_PF: command not found"

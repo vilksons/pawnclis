@@ -26,3 +26,8 @@
   Upgrade Package Manager
   Added Module "libppm" & "libpawnclis"
   Updated `paw -S` -> Added checking Version.
+  /2025/03/09/
+  Fixed any bugs
+  Fixed any bugs in lib PawnCLIS
+  Fixed bugs in any commands
+  Updated PAW/PPM
