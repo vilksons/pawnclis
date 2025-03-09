@@ -59,7 +59,7 @@ Configuration Details
   - ``pycurl``
   - ``urllib3``
   - ``requests``
-  for installation of all four download methods. you can see: `here <https://github.com/vilksons/pawnclis/tree/main/Required>`_
+  for installation of all four download methods. you can see: `here <https://github.com/vilksons/pawnclis/tree/main/ReadMe/Required>`_
 - ``chatbot_token``, ``chatbot_model``, ``chatbot_biodata``, ``chatbot_json_get``: Reserved fields for AI-related `Groq.com <https://groq.com/>`_ - `Keys <https://console.groq.com/keys>`_ configurations.
 
 Make sure this file is properly configured before running the compilation process.
