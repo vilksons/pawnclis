@@ -32,7 +32,7 @@ _DIR2=$(awk -F'"' '/"ppm_subdir"/ {print $4}' data.json)
 BASH_DIR="$(dirname "$(realpath "$0")")"
 BASH_TITLE=""
 BASH_NAME="pawnclis"
-BASH_BUILD="2025-03-10"
+BASH_BUILD="2025-03-11"
 
 VERSION=$BASH_BUILD
 LICENSES="GPL v2.0 Only"
