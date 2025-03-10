@@ -37,8 +37,7 @@ packageManager()
             fi
 
             if [ ! -f "$PPM_PACKAGE_FILE" ]; then
-                echo -n "$(bash_coltext_r "crit: ")"
-                echo "package.json not found"
+                echo -n "$(bash_coltext_r "crit: ") package.json not found"
                 
                 cat > package.json <<EOF
 {
@@ -81,8 +80,7 @@ EOF
             for PPM_REPOSITORY_URL in "${PPM_URLS[@]}"; do
 
                 if echo "$PPM_REPOSITORY_URL" | grep -qE "$DANGEROUS_KEYWORDS"; then
-                    echo -n "$(bash_coltext_r "crit: ")"
-                    echo "Warning: Dangerous URL detected! Blocking installation: $PPM_REPOSITORY_URL"
+                    echo -n "$(bash_coltext_r "crit: ") Dangerous URL detected! Blocking installation: $PPM_REPOSITORY_URL"
                     continue
                 fi
 
@@ -196,7 +194,7 @@ fi
                     mkdir -p "$PPM_EXTRACT_DIR"
                     tar -xzf "$PPM_ARCHIVE_FILE" -C "$PPM_EXTRACT_DIR" --strip-components=1
                 else
-                    echo -n "$(bash_coltext_r "crit:")" Downloaded file is not a valid ZIP or TAR.GZ - Please check Downloader status.."
+                    echo -n "$(bash_coltext_r "crit:") Downloaded file is not a valid ZIP or TAR.GZ - Please check Downloader status.."
                     rm -rf "$PPM_ARCHIVE_FILE" "$PPM_EXTRACT_DIR"
                     continue
                 fi
@@ -241,7 +239,7 @@ fi
             mkdir -p "$PPM_PLUGIN_DIR"
 
             if [ ! -f "$PPM_SERVER_CFG" ]; then
-                echo -n "$(bash_coltext_r "crit:") echo "$PPM_SERVER_CFG not found!."
+                echo -n "$(bash_coltext_r "crit:") $PPM_SERVER_CFG not found!."
                 echo "plugins " > "$PPM_SERVER_CFG"
             fi
             
