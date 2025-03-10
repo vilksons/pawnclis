@@ -140,7 +140,7 @@ EOF
                     if [ $UNHOST == 1 ]; then
                         [[ -z "$PPM_ARCHIVE_URL" ]] && PPM_ARCHIVE_URL=$(curl -s "$PPM_API_URL" | grep "browser_download_url" | grep -E ".zip|.tar.gz" | awk -F '"' '{print $4}' | head -n 1)
                     elif [ $UNHOST == 0 ]; then
-                         [[ -z "$PPM_ARCHIVE_URL" ]] && PPM_ARCHIVE_URL=$(curl -s "$PPM_REPOSITORY_URL" | grep "browser_download_url" | grep -E ".zip|.tar.gz" | awk -F '"' '{print $4}' | head -n 1)
+                        [[ -z "$PPM_ARCHIVE_URL" ]] && PPM_ARCHIVE_URL=$(curl -s "$PPM_REPOSITORY_URL" | grep "browser_download_url" | grep -E ".zip|.tar.gz" | awk -F '"' '{print $4}' | head -n 1)
                     fi
                 fi
 
