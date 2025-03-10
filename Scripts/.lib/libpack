@@ -33,8 +33,7 @@ function send_samp_linux()
                     break
                     ;;
                 *)
-                    echo -n "$(bash_coltext_r "E: ")"
-                    echo "Invalid selection. Please enter the Number!"
+                    echo -n "$(bash_coltext_r "E: ") Invalid selection. Please enter the Number!"
                     read -r -p ">> " VERSION_NEED
                     ;;
             esac
@@ -133,8 +132,7 @@ function send_compilers_linux()
                     break
                     ;;
                 *)
-                    echo -n "$(bash_coltext_r "E: ")"
-                    echo "Invalid selection. Please enter the Number!"
+                    echo -n "$(bash_coltext_r "E: ") Invalid selection. Please enter the Number!"
                     read -r -p ">> " VERSION_NEED
                     ;;
             esac
@@ -190,8 +188,7 @@ function send_samp_win()
                     break
                     ;;
                 *)
-                    echo -n "$(bash_coltext_r "E: ")"
-                    echo "Invalid selection. Please enter the Number!"
+                    echo -n "$(bash_coltext_r "E: ") Invalid selection. Please enter the Number!"
                     read -r -p ">> " VERSION_NEED
                     ;;
             esac
@@ -290,8 +287,7 @@ function send_compilers_win()
                     break
                     ;;
                 *)
-                    echo -n "$(bash_coltext_r "E: ")"
-                    echo "Invalid selection. Please enter the Number!"
+                    echo -n "$(bash_coltext_r "E: ") Invalid selection. Please enter the Number!"
                     read -r -p ">> " VERSION_NEED
                     ;;
             esac
