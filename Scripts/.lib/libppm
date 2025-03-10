@@ -16,6 +16,8 @@ function bash_typeof2() {
     packageManager ""
 }
 
+UNHOST=0
+
 packageManager()
 {
     local PACMAN="ppm"
@@ -61,7 +63,7 @@ EOF
                 PPM_URLS=("$PPM_REPOSITORY_URL")
             else
                 if [ ! -f "$PPM_PACKAGE_FILE" ]; then
-                    echo "$(bash_coltext_r "crit: ") package.json not found. Creating default one."
+                    echo "$(bash_coltext_r "crit: ") package.json not found."
                     cat > "$PPM_PACKAGE_FILE" <<EOF
 {
     "package": [
@@ -94,6 +96,10 @@ EOF
                         PPM_REPOSITORY_URL="https://gitlab.com/${PPM_REPOSITORY_URL#gitlab/}"
                     elif [[ "$PPM_REPOSITORY_URL" == sourceforge/* ]]; then
                         PPM_REPOSITORY_URL="https://sourceforge.net/projects/${PPM_REPOSITORY_URL#sourceforge/}"
+                    else
+                        echo "$(bash_coltext_G "warn:") host url unknown's: $PPM_API_URL..."
+                        UNHOST=1
+                        continue
                     fi
                 fi
                 
@@ -110,8 +116,9 @@ EOF
                     elif [[ "$PPM_REPOSITORY_URL" == *"sourceforge.net"* ]]; then
                         PPM_API_URL="https://sourceforge.net/projects/$PPM_REPO_NAME/files/latest/download"
                     else
-                        echo "error: Unsupported repository host $PPM_REPOSITORY_URL -> only github/gitlab/sourceforge"
-                        bash_typeof2 ""
+                        echo "$(bash_coltext_G "warn:") host url unknown's: $PPM_API_URL..."
+                        UNHOST=1
+                        continue
                     fi
                 
                     [[ -z "$PPM_ARCHIVE_URL" ]] && PPM_ARCHIVE_URL=$(curl -s "$PPM_API_URL" | grep "browser_download_url" | grep -E ".zip|.tar.gz" | awk -F '"' '{print $4}' | head -n 1)
@@ -125,11 +132,16 @@ EOF
                     elif [[ "$PPM_REPOSITORY_URL" == *"sourceforge.net"* ]]; then
                         PPM_ARCHIVE_URL="https://sourceforge.net/projects/$PPM_REPO_NAME/files/latest/download"
                     else
-                        echo "error: Unsupported repository host $PPM_REPOSITORY_URL -> only github/gitlab/sourceforge"
-                        bash_typeof2 ""
+                        echo "$(bash_coltext_G "warn:") host url unknown's: $PPM_API_URL..."
+                        UNHOST=1
+                        continue
                     fi
-                
-                    [[ -z "$PPM_ARCHIVE_URL" ]] && PPM_ARCHIVE_URL=$(curl -s "$PPM_API_URL" | grep "browser_download_url" | grep -E ".zip|.tar.gz" | awk -F '"' '{print $4}' | head -n 1)
+
+                    if [ $UNHOST == 1 ]; then
+                        [[ -z "$PPM_ARCHIVE_URL" ]] && PPM_ARCHIVE_URL=$(curl -s "$PPM_API_URL" | grep "browser_download_url" | grep -E ".zip|.tar.gz" | awk -F '"' '{print $4}' | head -n 1)
+                    elif [ $UNHOST == 0 ]; then
+                         [[ -z "$PPM_ARCHIVE_URL" ]] && PPM_ARCHIVE_URL=$(curl -s "$PPM_REPOSITORY_URL" | grep "browser_download_url" | grep -E ".zip|.tar.gz" | awk -F '"' '{print $4}' | head -n 1)
+                    fi
                 fi
 
                 PPM_ARCHIVE_FILE=".__temp__.zip"
@@ -184,8 +196,7 @@ fi
                     mkdir -p "$PPM_EXTRACT_DIR"
                     tar -xzf "$PPM_ARCHIVE_FILE" -C "$PPM_EXTRACT_DIR" --strip-components=1
                 else
-                    echo -n "$(bash_coltext_r "crit: ")"
-                    echo "Downloaded file is not a valid ZIP or TAR.GZ - Please check Downloader status.."
+                    echo -n "$(bash_coltext_r "crit:")" Downloaded file is not a valid ZIP or TAR.GZ - Please check Downloader status.."
                     rm -rf "$PPM_ARCHIVE_FILE" "$PPM_EXTRACT_DIR"
                     continue
                 fi
@@ -230,8 +241,7 @@ fi
             mkdir -p "$PPM_PLUGIN_DIR"
 
             if [ ! -f "$PPM_SERVER_CFG" ]; then
-                echo -n "$(bash_coltext_r "crit: ")"
-                echo "$PPM_SERVER_CFG not found! Creating a new one."
+                echo -n "$(bash_coltext_r "crit:") echo "$PPM_SERVER_CFG not found!."
                 echo "plugins " > "$PPM_SERVER_CFG"
             fi
             
