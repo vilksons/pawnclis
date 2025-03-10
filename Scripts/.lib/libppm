@@ -84,8 +84,7 @@ EOF
                     continue
                 fi
 
-                echo -n "$(bash_coltext_y "info: ")"
-                echo "Processing repository: $PPM_REPOSITORY_URL..."
+                echo -n "$(bash_coltext_y "dbg:") Processing repository: $PPM_REPOSITORY_URL..."
 
                 if [[ "$PPM_REPOSITORY_URL" != https://* ]]; then
                     if [[ "$PPM_REPOSITORY_URL" == github/* ]]; then
@@ -148,8 +147,7 @@ EOF
                 rm -rf "$PPM_EXTRACT_DIR"
                 mkdir -p "$PPM_EXTRACT_DIR"
 
-                echo -n "$(bash_coltext_y "info: ")"
-                echo "Downloading: $PPM_ARCHIVE_URL..."
+                echo -n "$(bash_coltext_y "dbg:") Downloading: $PPM_ARCHIVE_URL..."
 
 if [ "$PPM_INSTALLER" == "curl" ]; then
     curl -sL "$PPM_ARCHIVE_URL" -o "$PPM_ARCHIVE_FILE"
@@ -206,8 +204,7 @@ fi
                     rm -rf "$PPM_EXTRACT_SUBDIR"
                 fi
 
-                echo -n "$(bash_coltext_y "info: ")"
-                echo "Extraction Directory.."
+                echo -n "$(bash_coltext_y "dbg: ") Extraction Directory.."
 
                 find "$PPM_EXTRACT_DIR" -type f -name "*.inc" | while IFS= read -r inc_file; do
                     rel_path=$(realpath --relative-to="$PPM_EXTRACT_DIR" "$inc_file" 2> /dev/null || echo "$inc_file")
@@ -229,8 +226,7 @@ fi
                 find "$PPM_EXTRACT_DIR" -type f \( -name "*.dll" -o -name "*.so" \) -exec mv {} "$PPM_PLUGIN_DIR/" \;
 
                 rm -rf "$PPM_ARCHIVE_FILE" "$PPM_EXTRACT_DIR"
-                echo -n "$(bash_coltext_y "info: ")"
-                echo "Installation complete for $PPM_REPOSITORY_URL!"
+                echo -n "$(bash_coltext_y "dbg: ") Installation complete for $PPM_REPOSITORY_URL!"
             done
 
             echo -n "$(bash_coltext_y "[All packages installed]")"
@@ -270,8 +266,7 @@ fi
                 sed -i "s/^plugins .*/plugins $PPM_UPDATED_PLUGINS/" "$PPM_SERVER_CFG"
                 echo "Added new plugins to server.cfg: ${PPM_NEW_PLUGINS[*]}"
             else
-                echo -n "$(bash_coltext_y "info: ")"
-                echo "No new plugins need to be added."
+                echo -n "$(bash_coltext_y "dbg:") No new plugins need to be added."
             fi
 
             bash_typeof2 ""
@@ -307,22 +302,18 @@ fi
 
             if [[ -n "$INC_FILES" ]]; then
                 echo "$INC_FILES" | xargs rm -rf
-                echo -n "$(bash_coltext_y "[OK] ")"
-                echo "Removed includes: $INC_FILES"
+                echo -n "$(bash_coltext_y "[OK] ") Removed includes: $INC_FILES"
             else
-                echo -n "$(bash_coltext_y "info: ")"
-                echo "No matching include files found for pattern: $REMOVE_PATTERN"
+                echo -n "$(bash_coltext_y "dbg:") No matching include files found for pattern: $REMOVE_PATTERN"
             fi
 
             PLUGIN_FILES=$(find "$PPM_PLUGIN_DIR" -type f \( -name "*.dll" -o -name "*.so" \) | filter_files "$REMOVE_PATTERN")
 
             if [[ -n "$PLUGIN_FILES" ]]; then
                 echo "$PLUGIN_FILES" | xargs rm -rf
-                echo -n "$(bash_coltext_y "[OK] ")"
-                echo "Removed plugins: $PLUGIN_FILES"
+                echo -n "$(bash_coltext_y "[OK] ") Removed plugins: $PLUGIN_FILES"
             else
-                echo -n "$(bash_coltext_y "info: ")"
-                echo "No matching plugins found for pattern: $REMOVE_PATTERN"
+                echo -n "$(bash_coltext_y "dbg:") No matching plugins found for pattern: $REMOVE_PATTERN"
             fi
 
             if [[ -f "$PPM_SERVER_CFG" ]]; then
@@ -330,16 +321,13 @@ fi
                     sed -i "/^plugins /s/\b$REMOVE_PATTERN\b//g" "$PPM_SERVER_CFG"
                     sed -i 's/  / /g' "$PPM_SERVER_CFG"
                     sed -i 's/^plugins *$/plugins /' "$PPM_SERVER_CFG"
-                    echo -n "$(bash_coltext_y "[OK] ")"
-                    echo "Removed $REMOVE_PATTERN from server.cfg"
+                    echo -n "$(bash_coltext_y "[OK] ") Removed $REMOVE_PATTERN from server.cfg"
                 else
-                    echo -n "$(bash_coltext_y "info: ")"
-                    echo "No 'plugins' entry found in server.cfg"
+                    echo -n "$(bash_coltext_y "dbg:") No 'plugins' entry found in server.cfg"
                 fi
             fi
 
-            echo -n "$(bash_coltext_y "[OK] ")"
-            echo "Removal process completed!"
+            echo -n "$(bash_coltext_y "[OK] ") Removal process completed!"
             echo 
             
             bash_typeof2 ""
