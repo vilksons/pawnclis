@@ -33,7 +33,7 @@ function send_samp_linux()
                     break
                     ;;
                 *)
-                    echo -n "$(bash_coltext_r "E: ") Invalid selection. Please enter the Number!"
+                    echo -n "$(bash_coltext_r "err:") Invalid selection. Please enter the Number!"
                     read -r -p ">> " VERSION_NEED
                     ;;
             esac
@@ -41,8 +41,7 @@ function send_samp_linux()
 
         echo -e "\nDownloading: $DOWNLOAD_URL_CURL -> $DOWNLOAD_FILE_CURL"
         if ! curl -L --progress-bar -o "$DOWNLOAD_FILE_CURL" "$DOWNLOAD_URL_CURL"; then
-            echo -n "$(bash_coltext_r "fail: ")"
-            echo "Failed to download the file.."
+            echo -n "$(bash_coltext_r "fail:") Failed to download the file.."
             
             bash_end ""
         else
@@ -132,7 +131,7 @@ function send_compilers_linux()
                     break
                     ;;
                 *)
-                    echo -n "$(bash_coltext_r "E: ") Invalid selection. Please enter the Number!"
+                    echo -n "$(bash_coltext_r "err:") Invalid selection. Please enter the Number!"
                     read -r -p ">> " VERSION_NEED
                     ;;
             esac
@@ -140,8 +139,7 @@ function send_compilers_linux()
 
         echo -e "\nDownloading: $DOWNLOAD_URL_CURL -> $DOWNLOAD_FILE_CURL"
         if ! curl -L --progress-bar -o "$DOWNLOAD_FILE_CURL" "$DOWNLOAD_URL_CURL"; then
-            echo -n "$(bash_coltext_r "fail: ")"
-            echo "Failed to download the file.."
+            echo -n "$(bash_coltext_r "fail:") Failed to download the file.."
 
             bash_end ""
         else
@@ -188,7 +186,7 @@ function send_samp_win()
                     break
                     ;;
                 *)
-                    echo -n "$(bash_coltext_r "E: ") Invalid selection. Please enter the Number!"
+                    echo -n "$(bash_coltext_r "err:") Invalid selection. Please enter the Number!"
                     read -r -p ">> " VERSION_NEED
                     ;;
             esac
@@ -196,8 +194,7 @@ function send_samp_win()
 
         echo -e "\nDownloading: $DOWNLOAD_URL_CURL -> $DOWNLOAD_FILE_CURL"
         if ! curl -L --progress-bar -o "$DOWNLOAD_FILE_CURL" "$DOWNLOAD_URL_CURL"; then
-            echo -n "$(bash_coltext_r "fail: ")"
-            echo "Failed to download the file.."
+            echo -n "$(bash_coltext_r "fail:") Failed to download the file.."
 
             bash_end ""
         else
@@ -287,7 +284,7 @@ function send_compilers_win()
                     break
                     ;;
                 *)
-                    echo -n "$(bash_coltext_r "E: ") Invalid selection. Please enter the Number!"
+                    echo -n "$(bash_coltext_r "err:") Invalid selection. Please enter the Number!"
                     read -r -p ">> " VERSION_NEED
                     ;;
             esac
@@ -295,8 +292,7 @@ function send_compilers_win()
 
         echo -e "\nDownloading: $DOWNLOAD_URL_CURL -> $DOWNLOAD_FILE_CURL"
         if ! curl -L --progress-bar -o "$DOWNLOAD_FILE_CURL" "$DOWNLOAD_URL_CURL"; then
-            echo -n "$(bash_coltext_r "fail: ")"
-            echo "Failed to download the file.."
+            echo -n "$(bash_coltext_r "fail:") Failed to download the file.."
 
             bash_end ""
         else
