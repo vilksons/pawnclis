@@ -299,7 +299,7 @@ bash_Paw() {
             done < <(find "$BASH_DIR" -type f -iname "$PAWNCCS" -print0)
 
             if [ -z "$COMPILER_PAWNCC" ]; then
-                echo -n "$(bash_coltext_g "warn:") "$PAWNCCS not found!. You can get this in \`paw -p\`"
+                echo -n "$(bash_coltext_g "warn:") $PAWNCCS not found!. You can get this in \`paw -p\`"
 
                 read -r -n 1 -s
                 bash_typeof ""
