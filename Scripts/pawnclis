@@ -188,8 +188,7 @@ function bash_typeof() {
         BASH_TITLE="Waiting resource..."
         bash_title "$BASH_TITLE"
 
-        echo -n "$(bash_coltext_y "note: ")"
-        echo "libppm not found!. Installing.."
+        echo -n "$(bash_coltext_y "note:") libppm not found!. Installing.."
 
         sleep 0.100
 
@@ -209,8 +208,7 @@ function bash_typeof() {
         BASH_TITLE="Waiting resource..."
         bash_title "$BASH_TITLE"
 
-        echo -n "$(bash_coltext_y "note: ")"
-        echo "libpack not found!. Installing.."
+        echo -n "$(bash_coltext_y "note:") libpack not found!. Installing.."
 
         sleep 0.100
 
