@@ -163,8 +163,7 @@ check_os()
                         break
                         ;;
                     *)
-                        echo -n "$(bash_coltext_r "err: ")"
-                        echo "Invalid selection. Please enter the correct option!"
+                        echo -n "$(bash_coltext_r "err:") Invalid selection. Please enter the correct option!"
                         read -r -p "Choose OS (Y for Windows, B for Linux, X for macOS): " PERMISSION_NEED_OS
                         ;;
                 esac
@@ -233,8 +232,7 @@ function bash_typeof() {
         bash_title "$BASH_TITLE"
 
         if [ ! -f "$BASH_DIR/$BASH_SERVER" ]; then
-            echo -n "$(bash_coltext_g "warn: ")"
-            echo "$BASH_SERVER not found!. You can get this in \`paw -g\`"
+            echo -n "$(bash_coltext_g "warn:") $BASH_SERVER not found!. You can get this in \`paw -g\`"
 
             read -r -n 1 -s
             clear
@@ -248,8 +246,7 @@ function bash_typeof() {
         done < <(find "$BASH_DIR" -type f -iname "$PAWNCCS" -print0)
 
         if [ -z "$COMPILER_PAWNCC" ]; then
-            echo -n "$(bash_coltext_g "warn: ")"
-            echo "$PAWNCCS not found!. You can get this in \`paw -p\`"
+            echo -n "$(bash_coltext_g "warn:") $PAWNCCS not found!. You can get this in \`paw -p\`"
 
             read -r -n 1 -s
             clear
@@ -304,8 +301,7 @@ bash_Paw() {
             done < <(find "$BASH_DIR" -type f -iname "$PAWNCCS" -print0)
 
             if [ -z "$COMPILER_PAWNCC" ]; then
-                echo -n "$(bash_coltext_g "warn: ")"
-                echo "$PAWNCCS not found!. You can get this in \`paw -p\`"
+                echo -n "$(bash_coltext_g "warn:") "$PAWNCCS not found!. You can get this in \`paw -p\`"
 
                 read -r -n 1 -s
                 bash_typeof ""
@@ -389,8 +385,7 @@ bash_Paw() {
                 FOR_FIND_INPUT="${OPBASH_F#"$PAW_TRIGGER -d "}"
             else
                 if [ ! -f "$BASH_DIR/$BASH_SERVER" ]; then
-                    echo -n "$(bash_coltext_r "crit: ")"
-                    echo "$BASH_SERVER not found!. You can get this in \`paw -g\`"
+                    echo -n "$(bash_coltext_r "crit:") $BASH_SERVER not found!. You can get this in \`paw -g\`"
 
                     read -r -n 1 -s
                     bash_typeof ""
@@ -459,8 +454,7 @@ bash_Paw() {
                         break
                         ;;
                     *)
-                        echo -n "$(bash_coltext_r "err: ")"
-                        echo "Invalid selection. Please enter A or B."
+                        echo -n "$(bash_coltext_r "err:") Invalid selection. Please enter A or B."
                         ;;
                 esac
             done
@@ -484,8 +478,7 @@ bash_Paw() {
                         break
                         ;;
                     *)
-                        echo -n "$(bash_coltext_r "err: ")"
-                        echo "Invalid selection. Please enter A or B."
+                        echo -n "$(bash_coltext_r "err:") Invalid selection. Please enter A or B."
                         ;;
                 esac
             done
@@ -997,8 +990,7 @@ function bash_end() {
 
 function pawnclis_servers() {
     if [ ! -f "$BASH_DIR/$BASH_SERVER" ]; then
-        echo -n "$(bash_coltext_r "crit: ")"
-        echo "$BASH_SERVER not found!. You can get this in \`paw -g\`"
+        echo -n "$(bash_coltext_r "crit:") $BASH_SERVER not found!. You can get this in \`paw -g\`"
 
         read -r -n 1 -s
         bash_typeof ""
@@ -1060,8 +1052,7 @@ function withArgs_pawnclis_servers() {
     echo "New server.cfg created with gamemode: $FOR_FIND_INPUT"
 
     if [ ! -f "$BASH_DIR/$BASH_SERVER" ]; then
-        echo -n "$(bash_coltext_r "crit: ")"
-        echo "$BASH_SERVER not found!. You can get this in \`paw -g\`"
+        echo -n "$(bash_coltext_r "crit:") $BASH_SERVER not found!. You can get this in \`paw -g\`"
 
         read -r -n 1 -s
         bash_typeof ""
@@ -1093,8 +1084,7 @@ function pawnclis_compilers() {
     done < <(find "$BASH_DIR" -type f -iname "$PAWNCCS" -print0)
 
     if [ -z "$COMPILER_PAWNCC" ]; then
-        echo -n "$(bash_coltext_g "warn: ")"
-        echo "$PAWNCCS not found!. You can get this in \`paw -p\`"
+        echo -n "$(bash_coltext_g "warn:") $PAWNCCS not found!. You can get this in \`paw -p\`"
 
         read -r -n 1 -s
         bash_end ""
