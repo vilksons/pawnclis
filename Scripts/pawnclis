@@ -315,8 +315,7 @@ bash_Paw() {
 
                     AMX_O="$(dirname "$file")/$(basename "${file%.*}.amx")"
 
-                    echo -n "$(bash_coltext_y "dbg: ")"
-                    echo "Processing: $file"
+                    echo -n "$(bash_coltext_y "dbg:") Processing: $file"
 
                     "$COMPILER_PAWNCC" -i"$BASH_DIR$BASH_ALLOW_SDIR" "$file" -o"$AMX_O" "$AMX_OPT_F" > "$METADAT_FILE" 2>&1
                     EXIT_STATUS=$?
@@ -1099,8 +1098,7 @@ function pawnclis_compilers() {
 
             AMX_O="$(dirname "$file")/$(basename "${file%.io*}.amx")"
 
-            echo -n "$(bash_coltext_y "dbg: ")"
-            echo "Processing: $file"
+            echo -n "$(bash_coltext_y "dbg:") Processing: $file"
 
             "$COMPILER_PAWNCC" -i"$BASH_DIR$BASH_ALLOW_SDIR" "$file" -o"$AMX_O" "$AMX_OPT_F" > "$METADAT_FILE" 2>&1
             EXIT_STATUS=$?
