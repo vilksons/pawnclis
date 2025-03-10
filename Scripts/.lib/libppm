@@ -16,12 +16,12 @@ function bash_typeof2() {
     packageManager ""
 }
 
-UNHOST=0
-
 packageManager()
 {
     local PACMAN="ppm"
     local DANGEROUS_KEYWORDS="hack|exploit|malicious|trojan|virus|phish|nuker"
+
+    local UNHOST=0
 
     case "$OPBASH_PF" in
         "$PACMAN -S"* | "install"*)
