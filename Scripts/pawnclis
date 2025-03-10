@@ -163,7 +163,7 @@ check_os()
                         break
                         ;;
                     *)
-                        echo -n "$(bash_coltext_r "E: ")"
+                        echo -n "$(bash_coltext_r "err: ")"
                         echo "Invalid selection. Please enter the correct option!"
                         read -r -p "Choose OS (Y for Windows, B for Linux, X for macOS): " PERMISSION_NEED_OS
                         ;;
@@ -189,7 +189,7 @@ function bash_typeof() {
         BASH_TITLE="Waiting resource..."
         bash_title "$BASH_TITLE"
 
-        echo -n "$(bash_coltext_y "info: ")"
+        echo -n "$(bash_coltext_y "note: ")"
         echo "libppm not found!. Installing.."
 
         sleep 0.100
@@ -210,7 +210,7 @@ function bash_typeof() {
         BASH_TITLE="Waiting resource..."
         bash_title "$BASH_TITLE"
 
-        echo -n "$(bash_coltext_y "info: ")"
+        echo -n "$(bash_coltext_y "note: ")"
         echo "libpack not found!. Installing.."
 
         sleep 0.100
@@ -233,7 +233,7 @@ function bash_typeof() {
         bash_title "$BASH_TITLE"
 
         if [ ! -f "$BASH_DIR/$BASH_SERVER" ]; then
-            echo -n "$(bash_coltext_g "W: ")"
+            echo -n "$(bash_coltext_g "warn: ")"
             echo "$BASH_SERVER not found!. You can get this in \`paw -g\`"
 
             read -r -n 1 -s
@@ -248,7 +248,7 @@ function bash_typeof() {
         done < <(find "$BASH_DIR" -type f -iname "$PAWNCCS" -print0)
 
         if [ -z "$COMPILER_PAWNCC" ]; then
-            echo -n "$(bash_coltext_g "W: ")"
+            echo -n "$(bash_coltext_g "warn: ")"
             echo "$PAWNCCS not found!. You can get this in \`paw -p\`"
 
             read -r -n 1 -s
@@ -304,7 +304,7 @@ bash_Paw() {
             done < <(find "$BASH_DIR" -type f -iname "$PAWNCCS" -print0)
 
             if [ -z "$COMPILER_PAWNCC" ]; then
-                echo -n "$(bash_coltext_g "W: ")"
+                echo -n "$(bash_coltext_g "warn: ")"
                 echo "$PAWNCCS not found!. You can get this in \`paw -p\`"
 
                 read -r -n 1 -s
@@ -319,7 +319,7 @@ bash_Paw() {
 
                     AMX_O="$(dirname "$file")/$(basename "${file%.*}.amx")"
 
-                    echo -n "$(bash_coltext_y "info: ")"
+                    echo -n "$(bash_coltext_y "dbg: ")"
                     echo "Processing: $file"
 
                     "$COMPILER_PAWNCC" -i"$BASH_DIR$BASH_ALLOW_SDIR" "$file" -o"$AMX_O" "$AMX_OPT_F" > "$METADAT_FILE" 2>&1
@@ -389,7 +389,7 @@ bash_Paw() {
                 FOR_FIND_INPUT="${OPBASH_F#"$PAW_TRIGGER -d "}"
             else
                 if [ ! -f "$BASH_DIR/$BASH_SERVER" ]; then
-                    echo -n "$(bash_coltext_r "E: ")"
+                    echo -n "$(bash_coltext_r "crit: ")"
                     echo "$BASH_SERVER not found!. You can get this in \`paw -g\`"
 
                     read -r -n 1 -s
@@ -459,7 +459,7 @@ bash_Paw() {
                         break
                         ;;
                     *)
-                        echo -n "$(bash_coltext_r "E: ")"
+                        echo -n "$(bash_coltext_r "err: ")"
                         echo "Invalid selection. Please enter A or B."
                         ;;
                 esac
@@ -484,7 +484,7 @@ bash_Paw() {
                         break
                         ;;
                     *)
-                        echo -n "$(bash_coltext_r "E: ")"
+                        echo -n "$(bash_coltext_r "err: ")"
                         echo "Invalid selection. Please enter A or B."
                         ;;
                 esac
@@ -997,7 +997,7 @@ function bash_end() {
 
 function pawnclis_servers() {
     if [ ! -f "$BASH_DIR/$BASH_SERVER" ]; then
-        echo -n "$(bash_coltext_r "E: ")"
+        echo -n "$(bash_coltext_r "crit: ")"
         echo "$BASH_SERVER not found!. You can get this in \`paw -g\`"
 
         read -r -n 1 -s
@@ -1060,7 +1060,7 @@ function withArgs_pawnclis_servers() {
     echo "New server.cfg created with gamemode: $FOR_FIND_INPUT"
 
     if [ ! -f "$BASH_DIR/$BASH_SERVER" ]; then
-        echo -n "$(bash_coltext_r "E: ")"
+        echo -n "$(bash_coltext_r "crit: ")"
         echo "$BASH_SERVER not found!. You can get this in \`paw -g\`"
 
         read -r -n 1 -s
@@ -1093,7 +1093,7 @@ function pawnclis_compilers() {
     done < <(find "$BASH_DIR" -type f -iname "$PAWNCCS" -print0)
 
     if [ -z "$COMPILER_PAWNCC" ]; then
-        echo -n "$(bash_coltext_g "W: ")"
+        echo -n "$(bash_coltext_g "warn: ")"
         echo "$PAWNCCS not found!. You can get this in \`paw -p\`"
 
         read -r -n 1 -s
@@ -1109,7 +1109,7 @@ function pawnclis_compilers() {
 
             AMX_O="$(dirname "$file")/$(basename "${file%.io*}.amx")"
 
-            echo -n "$(bash_coltext_y "info: ")"
+            echo -n "$(bash_coltext_y "dbg: ")"
             echo "Processing: $file"
 
             "$COMPILER_PAWNCC" -i"$BASH_DIR$BASH_ALLOW_SDIR" "$file" -o"$AMX_O" "$AMX_OPT_F" > "$METADAT_FILE" 2>&1
