@@ -116,6 +116,7 @@ _OS_WINDOWS=0
 _OS_DARWIN=0
 _OS_SSERVER="null"
 _OS_PAWNCC="null"
+_OS_DISABLE_GNU_NANO=""
 
 check_os()
 {
@@ -124,19 +125,19 @@ check_os()
         
         if [[ "$OS_TYPE" == "Linux" ]]; then
             $SUDO . /etc/os-release && _OS_GNU_LINUX=1 &&
-            _OS_PAWNCC="pawncc" && _OS_DISABLE_NANO="false" &&
+            _OS_PAWNCC="pawncc" && _OS_DISABLE_GNU_NANO="false" &&
             _OS_SSERVER="samp03svr"
         fi
 
         if [[ "$OS_TYPE" == "Darwin" ]]; then
             _OS_DARWIN=1 &&
-            _OS_PAWNCC="pawncc" && _OS_DISABLE_NANO="true" &&
+            _OS_PAWNCC="pawncc" && _OS_DISABLE_GNU_NANO="true" &&
             _OS_SSERVER="samp03svr"
         fi
 
         if [ -d "/c/Windows/System32" ] || [ -d "/mnt/c/Windows/System32" ] || [ -d "/Windows/System32" ]; then
             _OS_WINDOWS=1 &&
-            _OS_PAWNCC="pawncc.exe" && _OS_DISABLE_NANO="true" &&
+            _OS_PAWNCC="pawncc.exe" && _OS_DISABLE_GNU_NANO="true" &&
             _OS_SSERVER="samp-server.exe"
         fi
 
@@ -146,9 +147,9 @@ check_os()
         
             while true; do
                 case "$PERMISSION_NEED_OS" in
-                    [Yy]) _OS_PAWNCC="pawncc.exe"; _OS_DISABLE_NANO="true"; _OS_SSERVER="samp-server.exe"; _OS_WINDOWS=1; _OS_GNU_LINUX=0; _OS_DARWIN=0; break ;;
-                    [Bb]) _OS_PAWNCC="pawncc"; _OS_DISABLE_NANO="false"; _OS_SSERVER="samp03svr"; _OS_WINDOWS=0; _OS_GNU_LINUX=1; _OS_DARWIN=0; break ;;
-                    [Xx]) _OS_PAWNCC="pawncc"; _OS_DISABLE_NANO="false"; _OS_SSERVER="samp03svr"; _OS_WINDOWS=0; _OS_GNU_LINUX=0; _OS_DARWIN=1; break ;;
+                    [Yy]) _OS_PAWNCC="pawncc.exe"; _OS_DISABLE_GNU_NANO="true"; _OS_SSERVER="samp-server.exe"; _OS_WINDOWS=1; _OS_GNU_LINUX=0; _OS_DARWIN=0; break ;;
+                    [Bb]) _OS_PAWNCC="pawncc"; _OS_DISABLE_GNU_NANO="false"; _OS_SSERVER="samp03svr"; _OS_WINDOWS=0; _OS_GNU_LINUX=1; _OS_DARWIN=0; break ;;
+                    [Xx]) _OS_PAWNCC="pawncc"; _OS_DISABLE_GNU_NANO="false"; _OS_SSERVER="samp03svr"; _OS_WINDOWS=0; _OS_GNU_LINUX=0; _OS_DARWIN=1; break ;;
                     *) echo -e "$(bash_coltext_r "err:") Invalid selection. Please enter the correct option!"; read -r -p "Choose OS for Triops Y) Windows, B) GNU/Linux, X) Darwin (Mac): " PERMISSION_NEED_OS ;;
                 esac
             done
@@ -762,7 +763,7 @@ d888888b d8888b. d888888b  .d88b.  d8888b. .d8888.
             
             if [[ -n "$OPS_FIND_ARGS" && "$OPS_FIND_ARGS" != "$OPS_OPTION_FLAGS" ]]; then
                 if [[ -n "${descriptions[$OPS_FIND_ARGS]}" ]]; then
-                    if [[ "$OPS_FIND_ARGS" == "nano" && "$_OS_DISABLE_NANO" == "true" ]]; then
+                    if [[ "$OPS_FIND_ARGS" == "nano" && "$_OS_DISABLE_GNU_NANO" == "true" ]]; then
                         bash_help "invalid"
                     else
                         echo "${descriptions[$OPS_FIND_ARGS]}"
@@ -804,7 +805,7 @@ function bash_help()
     echo " crunn, gamemodes, pawncc, clear, checksums"
     echo " fcheck, cat, tpm, kill, directory"
 
-    if [ "$_OS_DISABLE_NANO" == "true" ]; then
+    if [ "$_OS_DISABLE_GNU_NANO" == "true" ]; then
         echo " update, exit, remcac, chatbot, fetch"
     else
         echo " update, exit, remcac, chatbot, nano, fetch"
