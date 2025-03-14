@@ -45,7 +45,7 @@ function send_samp_linux()
             tar -xzvf "$DOWNLOAD_FILE_CURL" -C "$BASH_DIR" --strip-components=1
 
             echo
-            echo -e "$(bash_coltext_y "Download completed successfully.")"
+            echo -n "$(bash_coltext_y "Download completed successfully.")"
             echo
             echo "Please rename \"rcon_password\" before running this command again"
 
@@ -145,7 +145,7 @@ function send_compilers_linux()
 
             echo
             echo -e "$(bash_coltext_y "Download completed successfully.")"
-            echo
+            echo "See https://github.com/vilksons/triops/wiki/PawnCC-Installation for Docs."
 
             bash_end ""
         fi
@@ -200,7 +200,7 @@ function send_samp_win()
             unzip -q "$DOWNLOAD_FILE_CURL" -d "$BASH_DIR"
 
             echo
-            echo -e "$(bash_coltext_y "Download completed successfully.")"
+            echo -n "$(bash_coltext_y "Download completed successfully.")"
             echo
             echo "Please rename \"rcon_password\" before running this command again"
 

@@ -24,11 +24,11 @@ EOF
     echo -n "$(bash_coltext_y "$SHUSERS")"
     echo -n ":~$ "
     read -r TPM_OPTION_FLAGS
-    packageManager ""
+    bash_TPM ""
 }
 export bash_typeof2
 
-packageManager()
+bash_TPM()
 {
     : '
         TPM Mode
