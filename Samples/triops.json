@@ -1,0 +1,10 @@
+{
+    "amx_opt": ["-d2", "-Z+"],
+    "tpm_dir": "pawno",
+    "tpm_subdir": "include",
+    "tpm_type": "curl",
+    "chatbot_token": "",
+    "chatbot_model": "",
+    "chatbot_biodata": "",
+    "chatbot_json_get": ""
+}

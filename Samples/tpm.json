@@ -1,0 +1,10 @@
+{
+    "package": [
+        "github/example/user/repository",
+        "github/example/user/repository/to/files/.zip",
+        "github/example/user/repository/to/files/.tar.gz",
+        "gitlab/example/user/repository",
+        "gitlab/example/user/repository/to/files/.zip",
+        "gitlab/example/user/repository/to/files/.tar.gz"
+    ]
+}
