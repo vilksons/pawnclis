@@ -535,9 +535,31 @@ EOF
                             echo "Updating..."
 
                             cd "$BASH_DIR/.lib" > /dev/null 2>&1 || echo "" &&
-                            curl -L --progress-bar -o "libtpm" "https://raw.githubusercontent.com/vilksons/Triops/refs/heads/main/Tools/libtpm" && curl -L --progress-bar -o "libpack" "https://raw.githubusercontent.com/vilksons/triops/refs/heads/main/Tools/libpack"
+                            curl -L --progress-bar -o "libtpm" "https://raw.githubusercontent.com/vilksons/Triops/refs/heads/main/Tools/libtpm"
+
+                            DOWNLOAD_STATUS=$?
+
+                            if [ $DOWNLOAD_STATUS -ne 0 ]; then
+                                echo -e "$(bash_coltext_r ":: Always check for updates on the official Triops repository. Before doing Sync.")"
+                            fi
+
+                            curl -L --progress-bar -o "libpack" "https://raw.githubusercontent.com/vilksons/triops/refs/heads/main/Tools/libpack"
+
+                            DOWNLOAD_STATUS=$?
+
+                            if [ $DOWNLOAD_STATUS -ne 0 ]; then
+                                echo -e "$(bash_coltext_r ":: Always check for updates on the official Triops repository. Before doing Sync.")"
+                            fi
+
                             sleep 1 && cd "$BASH_DIR" > /dev/null 2>&1 || echo "" && curl -L --progress-bar -o "$BASH_NAME" "$URL_TRIP" | curl -L --progress-bar -o "$BASH_NAME" "https://gitea.com/vilksons/triops/raw/branch/main/Scripts/triops"
+                            
+                            DOWNLOAD_STATUS=$?
+
                             echo "$LATEST_COMMIT" > "$BASH_DIR/.current_commit"
+
+                            if [ $DOWNLOAD_STATUS -ne 0 ]; then
+                                echo -e "$(bash_coltext_r ":: Always check for updates on the official Triops repository. Before doing Sync.")"
+                            fi
         
                             sleep 1 && clear
                             chmod +x "$BASH_NAME"
