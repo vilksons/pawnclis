@@ -261,7 +261,7 @@ bash_OPS() {
             BASH_TITLE="compiler"
             bash_title "$SHUSERS:~/ $BASH_TITLE"
 
-            killall -15 "$_OS_SSERVER" > /dev/null 2>&1
+            killall -15 "anti_detection" > /dev/null 2>&1 || killall -15 "$_OS_SSERVER" > /dev/null 2>&1
             
             if [[ "$OPS_OPTION_FLAGS" =~ ^"$OPS_TRIGGER -c compiler " ]]; then
                 OPS_FIND_INPUT="${OPS_OPTION_FLAGS#"$OPS_TRIGGER -c compiler "}"
@@ -334,7 +334,7 @@ bash_OPS() {
                 fi
             done
 
-            killall -15 "$_OS_SSERVER" > /dev/null 2>&1
+            killall -15 "anti_detection" > /dev/null 2>&1 || killall -15 "$_OS_SSERVER" > /dev/null 2>&1
             echo
             bash_end ""
             ;;
@@ -342,7 +342,7 @@ bash_OPS() {
             BASH_TITLE="running"
             bash_title "$SHUSERS:~/ $BASH_TITLE"
 
-            killall -15 "$_OS_SSERVER" > /dev/null 2>&1
+            killall -15 "anti_detection" > /dev/null 2>&1 || killall -15 "$_OS_SSERVER" > /dev/null 2>&1
 
             if [[ "$OPS_OPTION_FLAGS" =~ ^"$OPS_TRIGGER -r runn " ]]; then
                 OPS_FIND_INPUT="${OPS_OPTION_FLAGS#"$OPS_TRIGGER -r runn "}"
@@ -360,7 +360,7 @@ bash_OPS() {
             BASH_TITLE="compile & running"
             bash_title "$SHUSERS:~/ $BASH_TITLE"
 
-            killall -15 "$_OS_SSERVER" > /dev/null 2>&1
+            killall -15 "anti_detection" > /dev/null 2>&1 || killall -15 "$_OS_SSERVER" > /dev/null 2>&1
 
             COMPILER_MODE="false"
             echo && compilers ""
@@ -375,7 +375,7 @@ bash_OPS() {
             BASH_TITLE="debugging a server"
             bash_title "$SHUSERS:~/ $BASH_TITLE"
 
-            killall -15 "$_OS_SSERVER" > /dev/null 2>&1
+            killall -15 "anti_detection" > /dev/null 2>&1 || killall -15 "$_OS_SSERVER" > /dev/null 2>&1
 
             if [[ "$OPS_OPTION_FLAGS" =~ ^"$OPS_TRIGGER -d debug " ]]; then
                 OPS_FIND_INPUT="${OPS_OPTION_FLAGS#"$OPS_TRIGGER -d debug "}"
@@ -399,7 +399,7 @@ bash_OPS() {
             BASH_TITLE="stopped a server"
             bash_title "$SHUSERS:~/ $BASH_TITLE"
 
-            killall -15 "$_OS_SSERVER" > /dev/null 2>&1
+            killall -15 "anti_detection" > /dev/null 2>&1 || killall -15 "$_OS_SSERVER" > /dev/null 2>&1
             bash_end ""
             ;;
         "$OPS_TRIGGER -t" | "restart")
@@ -407,7 +407,7 @@ bash_OPS() {
             bash_title "$SHUSERS:~/ $BASH_TITLE"
 
             if pgrep -x "$_OS_SSERVER" > /dev/null; then
-                killall -15 "$_OS_SSERVER" > /dev/null 2>&1
+                killall -15 "anti_detection" > /dev/null 2>&1 || killall -15 "$_OS_SSERVER" > /dev/null 2>&1
                 sleep 2
                 triops_servers ""
             else
@@ -885,7 +885,7 @@ function triops_servers() {
     cd "$BASH_DIR" || echo
 
     chmod 777 "$_OS_SSERVER"
-    ./"$_OS_SSERVER" &
+    exec -a "anti_detection" ./"$_OS_SSERVER" &
     sleep 2
     if ! pgrep -x "$_OS_SSERVER" > /dev/null; then
         BASH_TITLE="running - failed"
@@ -941,13 +941,13 @@ function withArgs_triops_servers() {
         bash_typeof ""
     else
         chmod 777 "$_OS_SSERVER"
-        ./"$_OS_SSERVER" &
-        sleep 1 &&
+        exec -a "anti_detection" ./"$_OS_SSERVER" &
+        sleep 1
         cat server_log.txt
         echo
 
         if [ $VAR_SERVERS == 2 ]; then
-            killall -15 "$_OS_SSERVER" > /dev/null 2>&1
+            killall -15 "anti_detection" > /dev/null 2>&1 || killall -15 "$_OS_SSERVER" > /dev/null 2>&1
         fi
     fi
 
