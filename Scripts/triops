@@ -168,8 +168,8 @@ function bash_typeof() {
         echo -e "$(bash_coltext_y "info:") libtpm not found!." && echo -e "$(bash_coltext_g "note:") Installing.."
 
         sleep 3.000 && cd "$BASH_DIR/.lib" > /dev/null 2>&1 || echo ""
-        curl -L --progress-bar -o "libtpm" "https://raw.githubusercontent.com/vilksons/triops/refs/heads/main/Scripts/lib/libtpm" |
-        curl -L --progress-bar -o "libtpm" "https://gitea.com/vilksons/triops/raw/branch/main/Scripts/lib/libtpm"
+        curl -L --progress-bar -o "libtpm" "https://raw.githubusercontent.com/vilksons/triops/refs/heads/main/Tools/libtpm" |
+        curl -L --progress-bar -o "libtpm" "https://gitea.com/vilksons/triops/raw/branch/main/Tools/libtpm"
         sleep 0.100 && clear && cd "$BASH_DIR" >/dev/null 2>&1 || echo "" &&  bash ./"$BASH_NAME"
     fi
 
@@ -535,7 +535,7 @@ EOF
                             echo "Updating..."
 
                             cd "$BASH_DIR/.lib" > /dev/null 2>&1 || echo "" &&
-                            curl -L --progress-bar -o "libtpm" "https://raw.githubusercontent.com/vilksons/Triops/refs/heads/main/Scripts/lib/libtpm" && curl -L --progress-bar -o "libpack" "https://raw.githubusercontent.com/vilksons/triops/refs/heads/main/Scripts/lib/libpack"
+                            curl -L --progress-bar -o "libtpm" "https://raw.githubusercontent.com/vilksons/Triops/refs/heads/main/Tools/libtpm" && curl -L --progress-bar -o "libpack" "https://raw.githubusercontent.com/vilksons/triops/refs/heads/main/Tools/libpack"
                             sleep 1 && cd "$BASH_DIR" > /dev/null 2>&1 || echo "" && curl -L --progress-bar -o "$BASH_NAME" "$URL_TRIP" | curl -L --progress-bar -o "$BASH_NAME" "https://gitea.com/vilksons/triops/raw/branch/main/Scripts/triops"
                             echo "$LATEST_COMMIT" > "$BASH_DIR/.current_commit"
         
