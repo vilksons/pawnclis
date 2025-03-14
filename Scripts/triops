@@ -1,9 +1,6 @@
 #!/bin/bash
 
-#############################
-# Release Date & Time #
 RELEASE_DATE="2025/03"
-#############################
 
 if [ ! -f "data.json" ]; then
     cat > data.json <<EOF
@@ -73,31 +70,27 @@ COLOR_R="\e[91m"
 COLOR_A="\e[97m"
 
 function bash_coltext_y() {
-# Yellow
     local color="$COLOR_Y"
     local text="$1"
     echo -e "${color}${text}\e[0m"
 }
 export bash_coltext_y
-#######################################
+
 function bash_coltext_g() {
-# Green
     local color="$COLOR_G"
     local text="$1"
     echo -e "${color}${text}\e[0m"
 }
 export bash_coltext_g
-#######################################
+
 function bash_coltext_r() {
-# Red
     local color="$COLOR_R"
     local text="$1"
     echo -e "${color}${text}\e[0m" 
 }
 export bash_coltext_r
-#######################################
+
 function bash_coltext_a() {
-# Gray
     local color="$COLOR_A"
     local text="$1"
     echo -e "${color}${text}\e[0m"
