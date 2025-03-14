@@ -125,7 +125,7 @@ cleanup() {
     rm -rf "$STRING_LOCK_NAME" &&
     rm -rf "$BASH_DIR/.cache"
     killall -9 "$BDOB_SHA256_CRYPTO" > /dev/null 2>&1 ||
-    killall -9 "$BASH_NAME" > /dev/null 2>&1 || pkill -9 -f "$BASH_NAME"
+    killall -9 "$BASH_NAME" > /dev/null 2>&1
 }
 
 trap cleanup SIGINT SIGTERM SIGQUIT SIGHUP
@@ -139,7 +139,6 @@ _OS_PAWNCC="null"
 _OS_DISABLE_GNU_NANO=""
 
 check_os() {
-
     : '
         operating system (OS) Check { GNU/Linux, Darwin - MacOS, Windows }
     '
@@ -313,7 +312,7 @@ bash_OPS() {
                 bash_end ""
             fi
 
-            mapfile -d '' files < <(find "$BASH_DIR" -name "*$OPS_FIND_INPUT*" -type f -print0)
+            mapfile -d '' files < <(find "$BASH_DIR" -name "$OPS_FIND_INPUT" -type f -print0)
 
             for file in "${files[@]}"; do
                 if [ -f "$file" ] && [[ "$file" != *.amx ]]; then
@@ -323,23 +322,11 @@ bash_OPS() {
 
                     echo -e "$(bash_coltext_y "dbg:") Processing: $file"
 
-                    declare COMPILER="$COMPILER_PAWNCC"
-                    declare INCLUDE_DIR="-i$BASH_DIR$BASH_ALLOW_SDIR"
-                    declare OUTPUT="-o$AMX_O"
-                    declare OPTIONS="$AMX_OPT_F"
-                    declare LOG="> $METADAT_FILE 2>&1"
-                    $COMPILER "$INCLUDE_DIR" "$file" "$OUTPUT" "$OPTIONS" "$LOG"
-
-                    EXIT_STATUS=$?
-
-                    if [ $EXIT_STATUS -ne 0 ] || grep -q "fatal error" "$METADAT_FILE"; then
-                        echo "Compilation failed with exit code: $EXIT_STATUS"
-                        [ -f "$AMX_O" ] && rm -rf "$AMX_O"
-                    fi
+                    "$COMPILER_PAWNCC" -i"$BASH_DIR$BASH_ALLOW_SDIR" "$file" -o"$AMX_O" "$AMX_OPT_F" > "$METADAT_FILE" 2>&1
 
                     bash_cache_compiler ""
                     sleep 0.100 &&
-                    cat "$METADAT_FILE" > /dev/null 2>&1
+                    cat "$METADAT_FILE"
 
                     if [ -s "$AMX_O" ]; then
                         echo
@@ -1011,19 +998,7 @@ function triops_compilers() {
 
             echo -e "$(bash_coltext_y "dbg:") Processing: $file"
 
-            declare COMPILER="$COMPILER_PAWNCC"
-            declare INCLUDE_DIR="-i$BASH_DIR$BASH_ALLOW_SDIR"
-            declare OUTPUT="-o$AMX_O"
-            declare OPTIONS="$AMX_OPT_F"
-            declare LOG="> $METADAT_FILE 2>&1"
-            $COMPILER "$INCLUDE_DIR" "$file" "$OUTPUT" "$OPTIONS" "$LOG"
-
-            EXIT_STATUS=$?
-
-            if [ $EXIT_STATUS -ne 0 ] || grep -q "fatal error" "$METADAT_FILE"; then
-                echo "Compilation failed with exit code: $EXIT_STATUS"
-                [ -f "$AMX_O" ] && rm -rf "$AMX_O"
-            fi
+            "$COMPILER_PAWNCC" -i"$BASH_DIR$BASH_ALLOW_SDIR" "$file" -o"$AMX_O" "$AMX_OPT_F" > "$METADAT_FILE" 2>&1
 
             bash_cache_compiler ""
             sleep 0.100 &&
