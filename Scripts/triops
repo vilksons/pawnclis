@@ -2,8 +2,8 @@
 
 RELEASE_DATE="2025/03"
 
-if [ ! -f "data.json" ]; then
-    cat > data.json <<EOF
+if [ ! -f "triops.json" ]; then
+    cat > triops.json <<EOF
 {
     "amx_opt": ["-d2", "-Z+"],
     "tpm_dir": "pawno",
@@ -21,26 +21,26 @@ if [ ! -d ".cache" ]; then
     mkdir ".cache"
 fi
 
-TRIOPS_DIR=$(awk -F'"' '/"tpm_dir"/ {print $4}' data.json)
+URL_TRIP="https://raw.githubusercontent.com/vilksons/triops/refs/heads/main/Scripts/triops"
+
+TRIOPS_DIR=$(awk -F'"' '/"tpm_dir"/ {print $4}' triops.json || sed -n 's/.*"tpm_dir"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' triops.json || grep -oP '(?<="tpm_dir": ")[^"]+' triops.json || echo "error load json for : \"tpm_dir\"")
 export TRIOPS_DIR
 
-TRIOPS_SUBDIR=$(awk -F'"' '/"tpm_subdir"/ {print $4}' data.json)
+TRIOPS_SUBDIR=$(awk -F'"' '/"tpm_subdir"/ {print $4}' triops.json || sed -n 's/.*"tpm_subdir"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' triops.json || grep -oP '(?<="tpm_subdir": ")[^"]+' triops.json || echo "error load json for : \"tpm_subdir\"")
 export TRIOPS_SUBDIR
 
 ALLOW_INC_DIR="$TRIOPS_DIR/$TRIOPS_SUBDIR"
 export ALLOW_INC_DIR
 
-TRIOPS_INSTALLER=$(grep '"tpm_type"' data.json | sed -E 's/.*"tpm_type": "(.*)".*/\1/')
+TRIOPS_INSTALLER=$(grep '"tpm_type"' triops.json | sed -E 's/.*"tpm_type": "(.*)".*/\1/' || awk -F'"' '/"tpm_type"/ {print $4}' triops.json || echo "error load json for : \"tpm_type\"")
 export TRIOPS_INSTALLER
 
-AMX_OPT_F=$(grep '"amx_opt"' data.json | sed -E 's/.*"amx_opt": \[(.*)\].*/\1/' | sed 's/"//g' | sed 's/,/ /g')
+AMX_OPT_F=$(grep '"amx_opt"' triops.json | sed -E 's/.*"amx_opt": \[(.*)\].*/\1/' | sed 's/"//g' | sed 's/,/ /g' || echo "error load json for : \"amx_opt\"")
 
-URL_TRIP="https://raw.githubusercontent.com/vilksons/triops/refs/heads/main/Scripts/triops"
-
-CHATBOT_TOKEN=$(grep '"chatbot_token"' data.json | sed -E 's/.*"chatbot_token": "(.*)".*/\1/')
-CHATBOT_MODEL=$(grep '"chatbot_model"' data.json | sed -E 's/.*"chatbot_model": "(.*)".*/\1/')
-CHATBOT_BIODATA=$(grep '"chatbot_biodata"' data.json | sed -E 's/.*"chatbot_biodata": "(.*)".*/\1/')
-CHATBOT_JSON_GET=$(grep '"chatbot_json_get"' data.json | sed -E 's/.*"chatbot_json_get": "(.*)".*/\1/')
+CHATBOT_TOKEN=$(grep '"chatbot_token"' triops.json | sed -E 's/.*"chatbot_token": "(.*)".*/\1/' || awk -F'"' '/"chatbot_token"/ {print $4}' triops.json || echo "error load json for : \"chatbot_token\"")
+CHATBOT_MODEL=$(grep '"chatbot_model"' triops.json | sed -E 's/.*"chatbot_model": "(.*)".*/\1/' || awk -F'"' '/"chatbot_model"/ {print $4}' triops.json || echo "error load json for : \"chatbot_model\"")
+CHATBOT_BIODATA=$(grep '"chatbot_biodata"' triops.json | sed -E 's/.*"chatbot_biodata": "(.*)".*/\1/' || awk -F'"' '/"chatbot_biodata"/ {print $4}' triops.json || echo "error load json for : \"chatbot_biodata\"")
+CHATBOT_JSON_GET=$(grep '"chatbot_json_get"' triops.json | sed -E 's/.*"chatbot_json_get": "(.*)".*/\1/' || awk -F'"' '/"chatbot_json_get"/ {print $4}' triops.json || echo "error load json for : \"chatbot_json_get\"")
 
 METADAT_FILE=".cache/compiler.log"
 

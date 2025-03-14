@@ -1,10 +1,10 @@
 #!/bin/bash
 
 function bash_typeof2() {
-    if [ ! -f "package.json" ]; then
-        echo -e "$(bash_coltext_g "warn:") package.json not found"
+    if [ ! -f "tpm.json" ]; then
+        echo -e "$(bash_coltext_g "warn:") tpm.json not found"
             
-        cat > package.json <<EOF
+        cat > tpm.json <<EOF
 {
     "package": [
         "github/example/user/repository",
@@ -39,7 +39,7 @@ packageManager()
             bash_title "$SHUSERS:~/ $BASH_TITLE"
 
             local TPM_PLUGIN_DIR="plugins"
-            local TPM_PACKAGE_FILE="package.json"
+            local TPM_PACKAGE_FILE="tpm.json"
             local TPM_SERVER_CFG="server.cfg"
 
             if [ ! -d "$TPM_DIR" ]; then
@@ -52,7 +52,8 @@ packageManager()
             if [[ -n "$TPM_REPOSITORY_URL" && "$TPM_REPOSITORY_URL" != "$TPM_TR -S" ]]; then
                 TPM_URLS=("$TPM_REPOSITORY_URL")
             else
-                mapfile -t TPM_URLS < <(awk -F '"' '/"package"/ {f=1; next} f && NF {print $2} /]/ {f=0}' "$TPM_PACKAGE_FILE")
+                mapfile -t TPM_URLS < <(awk -F '"' '/"package"/ {f=1; next} f && NF {print $2} /]/ {f=0}' "$TPM_PACKAGE_FILE" || \
+                    grep -oP '(?<=")[^"]+(?=")' "$TPM_PACKAGE_FILE" | sed -n '/package/,$p'  || echo "error load json for : \"package\"")
             fi
 
             for TPM_REPOSITORY_URL in "${TPM_URLS[@]}"; do
