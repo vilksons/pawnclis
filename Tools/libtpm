@@ -30,6 +30,10 @@ export bash_typeof2
 
 packageManager()
 {
+    : '
+        TPM Mode
+    '
+
     local TPM_TR="tpm"
     local TPM_UNHOST=0
 

@@ -79,7 +79,6 @@ CHATBOT_JSON_GET=$(grep '"chatbot_json_get"' triops.json | sed -E 's/.*"chatbot_
 # export CHATBOT_MODEL
 # export CHATBOT_BIODATA
 # export CHATBOT_JSON_GET
-
 #####################################################
 
 METADAT_FILE=".cache/compiler.log"
@@ -153,6 +152,9 @@ _OS_DISABLE_GNU_NANO=""
 
 check_os()
 {
+    : '
+        operating system (OS) Check { GNU/LINUX, Darwin/MacOS, Windows }
+    '
     if [ $_OS_ACCEPT != 1 ]; then
         OS_TYPE=$(uname)
         
@@ -193,6 +195,10 @@ check_os()
 # shellcheck source=/dev/null
 
 function bash_typeof() {
+    : '
+        Main Function
+    '
+
     check_os ""
 
     if [ ! -d ".lib" ]; then
@@ -260,6 +266,10 @@ function bash_typeof() {
 export bash_typeof
 
 function go_next() {
+    : '
+        Send Permission for Typing
+    '
+
     BASH_TITLE="OPS Mode"
     bash_title "$BASH_TITLE"
 
@@ -271,6 +281,10 @@ function go_next() {
 }
 
 bash_Paw() {
+    : '
+        Paw Mode
+    '
+
     local OPS_TRIGGER="ops"
 
     case "$OPS_OPTION_FLAGS" in
