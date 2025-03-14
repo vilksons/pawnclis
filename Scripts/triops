@@ -42,6 +42,46 @@ CHATBOT_MODEL=$(grep '"chatbot_model"' triops.json | sed -E 's/.*"chatbot_model"
 CHATBOT_BIODATA=$(grep '"chatbot_biodata"' triops.json | sed -E 's/.*"chatbot_biodata": "(.*)".*/\1/' || awk -F'"' '/"chatbot_biodata"/ {print $4}' triops.json || echo "error load json for : \"chatbot_biodata\"")
 CHATBOT_JSON_GET=$(grep '"chatbot_json_get"' triops.json | sed -E 's/.*"chatbot_json_get": "(.*)".*/\1/' || awk -F'"' '/"chatbot_json_get"/ {print $4}' triops.json || echo "error load json for : \"chatbot_json_get\"")
 
+################### Alternate #######################
+# while IFS= read -r line; do
+#     if [[ "$line" =~ '"tpm_dir":\s*"([^"]+)"' ]]; then
+#         TRIOPS_DIR="${BASH_REMATCH[1]}"
+#     fi
+#     if [[ "$line" =~ '"tpm_subdir":\s*"([^"]+)"' ]]; then
+#         TRIOPS_SUBDIR="${BASH_REMATCH[1]}"
+#     fi
+#     if [[ "$line" =~ '"tpm_type":\s*"([^"]+)"' ]]; then
+#         TRIOPS_INSTALLER="${BASH_REMATCH[1]}"
+#     fi
+#     if [[ "$line" =~ '"amx_opt":\s*\[(.*)\]' ]]; then
+#         AMX_OPT_F="${BASH_REMATCH[1]}"
+#     fi
+#     if [[ "$line" =~ '"chatbot_token":\s*"([^"]+)"' ]]; then
+#         CHATBOT_TOKEN="${BASH_REMATCH[1]}"
+#     fi
+#     if [[ "$line" =~ '"chatbot_model":\s*"([^"]+)"' ]]; then
+#         CHATBOT_MODEL="${BASH_REMATCH[1]}"
+#     fi
+#     if [[ "$line" =~ '"chatbot_biodata":\s*"([^"]+)"' ]]; then
+#         CHATBOT_BIODATA="${BASH_REMATCH[1]}"
+#     fi
+#     if [[ "$line" =~ '"chatbot_json_get":\s*"([^"]+)"' ]]; then
+#         CHATBOT_JSON_GET="${BASH_REMATCH[1]}"
+#     fi
+# done < triops.json
+
+# export TRIOPS_DIR
+# export TRIOPS_SUBDIR
+# export ALLOW_INC_DIR="$TRIOPS_DIR/$TRIOPS_SUBDIR"
+# export TRIOPS_INSTALLER
+# export AMX_OPT_F
+# export CHATBOT_TOKEN
+# export CHATBOT_MODEL
+# export CHATBOT_BIODATA
+# export CHATBOT_JSON_GET
+
+#####################################################
+
 METADAT_FILE=".cache/compiler.log"
 
 BASH_TITLE=""
