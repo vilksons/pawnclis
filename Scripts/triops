@@ -645,21 +645,26 @@ EOF
             bash_end ""
             ;;
         "$OPS_TRIGGER -N"* | "nano"*)
-            BASH_TITLE="GNU Nano Editor"
-            bash_title "$BASH_TITLE"
-            
-            local OPS_FIND_ARGS="${#"$OPS_TRIGGER -N "}"
-            local OPS_FIND_ARGS="${OPS_FIND_ARGS#nano }"
+            if [ "$_OS_DISABLE_GNU_NANO" == "false" ]; then
+                BASH_TITLE="GNU Nano Editor"
+                bash_title "$BASH_TITLE"
+                
+                local OPS_FIND_ARGS="${#"$OPS_TRIGGER -N "}"
+                local OPS_FIND_ARGS="${OPS_FIND_ARGS#nano }"
 
-            if [[ -n "$OPS_FIND_ARGS" && "$OPS_FIND_ARGS" != "$OPS_OPTION_FLAGS" ]]; then
-                FILE_PATH="$OPS_FIND_ARGS"
+                if [[ -n "$OPS_FIND_ARGS" && "$OPS_FIND_ARGS" != "$OPS_OPTION_FLAGS" ]]; then
+                    FILE_PATH="$OPS_FIND_ARGS"
+                else
+                    echo -e "$(bash_coltext_a ":: Enter File Name:")"
+                    read -r -p ">>> " FILE_PATH
+                fi
+
+                nano "$FILE_PATH"
+                bash_end ""
             else
-                echo -e "$(bash_coltext_a ":: Enter File Name:")"
-                read -r -p ">>> " FILE_PATH
+                echo "error: $OPS_OPTION_FLAGS: command not found"
+                bash_end ""
             fi
-
-            nano "$FILE_PATH"
-            bash_end ""
             ;;
         "$OPS_TRIGGER -O" | "remcac")
             BASH_TITLE="Remove Cache"
