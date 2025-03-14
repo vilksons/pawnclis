@@ -3,7 +3,7 @@
 RELEASE_DATE="2025/03"
 
 : '
-    Double SHA256 for encryption Running Server SA-MP
+    Double SHA256 for encryption for Server SA-MP
 '
 DOB_SHA256_CRYPTO="$(echo "$RANDOM$(date +%s%N)" | sha256sum | awk '{print $1}' | xxd -r -p | sha256sum | awk '{print $1}')"
 export DOB_SHA256_CRYPTO
@@ -54,7 +54,6 @@ BASH_TITLE=""
 BASH_DIR="$(dirname "$(realpath "$0")")"
 BASH_NAME="$(basename "$0")"
 LICENSES="GPL v2.0 Only"
-
 COMPILER_MODE="false"
 COMPILER_PAWNCC=""
 
@@ -109,6 +108,25 @@ resetVariable() {
     VAR_SERVERS=0
 }
 
+: '
+    Double SHA256 for encryption for Triops
+'
+BDOB_SHA256_CRYPTO="$(echo "$RANDOM$(date +%s%N)" | sha256sum | awk '{print $1}' | xxd -r -p | sha256sum | awk '{print $1}')"
+
+STRING_LOCK_NAME="$BASH_DIR/.bash_encrypt.lock"
+
+if [ ! -f "$STRING_LOCK_NAME" ]; then
+    touch "$STRING_LOCK_NAME"
+    echo "$BDOB_SHA256_CRYPTO" > "$STRING_LOCK_NAME"
+    exec -a "$BDOB_SHA256_CRYPTO" ./"$BASH_NAME"
+fi
+
+cleanup() {
+    rm -rf "$STRING_LOCK_NAME"
+}
+
+trap cleanup SIGINT SIGTERM SIGQUIT SIGHUP
+
 _OS_ACCEPT=0
 _OS_GNU_LINUX=0
 _OS_WINDOWS=0
@@ -117,8 +135,8 @@ _OS_SSERVER="null"
 _OS_PAWNCC="null"
 _OS_DISABLE_GNU_NANO=""
 
-check_os()
-{
+check_os() {
+
     : '
         operating system (OS) Check { GNU/Linux, Darwin - MacOS, Windows }
     '
