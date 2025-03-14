@@ -214,8 +214,12 @@ function bash_typeof() {
         echo -e "$(bash_coltext_y "info:") libtpm not found!." && echo -e "$(bash_coltext_g "note:") Installing.."
 
         sleep 3.000 && cd "$BASH_DIR/.lib" > /dev/null 2>&1 || echo ""
-        curl -L --progress-bar -o "libtpm" "https://raw.githubusercontent.com/vilksons/triops/refs/heads/main/Tools/libtpm" |
-        curl -L --progress-bar -o "libtpm" "https://gitea.com/vilksons/triops/raw/branch/main/Tools/libtpm"
+        curl -L --progress-bar -o "libtpm" "https://raw.githubusercontent.com/vilksons/Triops/refs/heads/main/Tools/libtpm" |
+        curl -L --progress-bar -o "libtpm" "https://gitea.com/vilksons/triops/raw/branch/main/Tools/libpack"
+        DOWNLOAD_STATUS=$?
+        if [ $DOWNLOAD_STATUS -ne 0 ]; then
+            echo -e "$(bash_coltext_r "Failed: Always check for updates on the official Triops repository. Before doing Sync.")"
+        fi
         sleep 0.100 && clear && cd "$BASH_DIR" >/dev/null 2>&1 || echo "" &&  bash ./"$BASH_NAME"
     fi
 
@@ -227,8 +231,12 @@ function bash_typeof() {
 
         echo -e "$(bash_coltext_y "info:") libpack not found!." && echo -e "$(bash_coltext_g "note:") Installing.."
         sleep 3.000 && clear && cd "$BASH_DIR/.lib" >/dev/null 2>&1 || echo ""
-        curl -L --progress-bar -o "libpack" "https://raw.githubusercontent.com/vilksons/triops/refs/heads/main/Scripts/lib/libpack" |
-        curl -L --progress-bar -o "libpack" "https://gitea.com/vilksons/triops/raw/branch/main/Scripts/lib/libpack"
+        curl -L --progress-bar -o "libpack" "https://raw.githubusercontent.com/vilksons/triops/refs/heads/main/Tools/libpack" |
+        curl -L --progress-bar -o "libpack" "https://gitea.com/vilksons/triops/raw/branch/main/Tools/libpack"
+        DOWNLOAD_STATUS=$?
+        if [ $DOWNLOAD_STATUS -ne 0 ]; then
+            echo -e "$(bash_coltext_r "Failed: Always check for updates on the official Triops repository. Before doing Sync.")"
+        fi
         sleep 0.100 && clear && cd "$BASH_DIR" >/dev/null 2>&1 || echo "" && bash ./"$BASH_NAME"
     fi
 
@@ -1190,6 +1198,8 @@ ok_next() {
 }
 
 : '
-    This is main! Not End.. End just manual use "bash_end" or another.
+    Overcoming the problem if there is no Function running so that it does not auto exit.
 '
-bash_typeof ""
+if [ -z "$1" ]; then
+    bash_typeof ""
+fi
