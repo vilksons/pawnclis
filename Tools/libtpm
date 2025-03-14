@@ -148,6 +148,9 @@ packageManager()
 
                 echo -e "$(bash_coltext_y "Downloading") $TPM_FILE_NAME $TPM_VERSION_REPO"
 
+: '
+    Installer
+'
 if [ "$TPM_INSTALLER" == "curl" ]; then
     curl -sL "$TPM_ARCHIVE_URL" -o "$TPM_ARCHIVE_FILE"
 elif [ "$TPM_INSTALLER" == "pycurl" ]; then

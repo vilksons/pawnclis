@@ -153,7 +153,7 @@ _OS_DISABLE_GNU_NANO=""
 check_os()
 {
     : '
-        operating system (OS) Check { GNU/LINUX, Darwin/MacOS, Windows }
+        operating system (OS) Check { GNU/Linux, Darwin - MacOS, Windows }
     '
     if [ $_OS_ACCEPT != 1 ]; then
         OS_TYPE=$(uname)
@@ -1189,4 +1189,7 @@ ok_next() {
     triops_servers ""
 }
 
+: '
+    This is main! Not End.. End just manual use "bash_end" or another.
+'
 bash_typeof ""
