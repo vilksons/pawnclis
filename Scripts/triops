@@ -2,12 +2,6 @@
 
 RELEASE_DATE="2025/03"
 
-: '
-    Double SHA256 for encryption for Server SA-MP
-'
-DOB_SHA256_CRYPTO="$(echo "$RANDOM$(date +%s%N)" | sha256sum | awk '{print $1}' | xxd -r -p | sha256sum | awk '{print $1}')"
-export DOB_SHA256_CRYPTO
-
 if [ ! -f "triops.json" ]; then
     cat > triops.json <<EOF
 {
@@ -108,28 +102,6 @@ resetVariable() {
     VAR_SERVERS=0
 }
 
-: '
-    Double SHA256 for encryption for Triops
-'
-BDOB_SHA256_CRYPTO="$(echo "$RANDOM$(date +%s%N)" | sha256sum | awk '{print $1}' | xxd -r -p | sha256sum | awk '{print $1}')"
-
-STRING_LOCK_NAME="$BASH_DIR/.bash_encrypt.lock"
-
-if [ ! -f "$STRING_LOCK_NAME" ]; then
-    touch "$STRING_LOCK_NAME"
-    echo "$BDOB_SHA256_CRYPTO" > "$STRING_LOCK_NAME"
-    exec -a "$BDOB_SHA256_CRYPTO" ./"$BASH_NAME"
-fi
-
-cleanup() {
-    rm -rf "$STRING_LOCK_NAME" &&
-    rm -rf "$BASH_DIR/.cache"
-    killall -9 "$BDOB_SHA256_CRYPTO" > /dev/null 2>&1 ||
-    killall -9 "$BASH_NAME" > /dev/null 2>&1
-}
-
-trap cleanup SIGINT SIGTERM SIGQUIT SIGHUP
-
 _OS_ACCEPT=0
 _OS_GNU_LINUX=0
 _OS_WINDOWS=0
@@ -137,6 +109,26 @@ _OS_DARWIN=0
 _OS_SSERVER="null"
 _OS_PAWNCC="null"
 _OS_DISABLE_GNU_NANO=""
+
+# shellcheck source=/dev/null
+
+security_safe() {
+    if [ -f "$BASH_DIR/.lib/security" ]; then
+        source "$BASH_DIR/.lib/security"
+    else
+        BASH_TITLE="Waiting resource.."
+        bash_title "$BASH_TITLE"
+
+        echo -e "$(bash_coltext_y "info:") security not found!." && echo -e "$(bash_coltext_g "note:") Installing.."
+        sleep 3.000 && clear && cd "$BASH_DIR/.lib" >/dev/null 2>&1 || echo ""
+        curl -L --progress-bar -o "security" "https://raw.githubusercontent.com/vilksons/triops/refs/heads/main/Tools/security" |
+        curl -L --progress-bar -o "security" "https://gitea.com/vilksons/triops/raw/branch/main/Tools/security"
+        DOWNLOAD_STATUS=$?
+        if [ $DOWNLOAD_STATUS -ne 0 ]; then
+            echo -e "$(bash_coltext_r "Failed: Always check for updates on the official Triops repository. Before doing Sync.")"
+        fi
+    fi
+}
 
 check_os() {
     : '
@@ -185,6 +177,8 @@ function bash_typeof() {
     : '
         Main Function
     '
+
+    security_safe ""
 
     check_os ""
 

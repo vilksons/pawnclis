@@ -1,0 +1,29 @@
+#!/bin/bash
+
+: '
+    Double SHA256 encryption for Server SA-MP
+'
+DOB_SHA256_CRYPTO="$(echo "$RANDOM$(date +%s%N)" | sha256sum | awk '{print $1}' | xxd -r -p | sha256sum | awk '{print $1}')"
+export DOB_SHA256_CRYPTO
+
+: '
+    Double SHA256 encryption for Triops
+'
+BDOB_SHA256_CRYPTO="$(echo "$RANDOM$(date +%s%N)" | sha256sum | awk '{print $1}' | xxd -r -p | sha256sum | awk '{print $1}')"
+
+STRING_LOCK_NAME="$BASH_DIR/.bash_encrypt.lock"
+
+if [ ! -f "$STRING_LOCK_NAME" ]; then
+    touch "$STRING_LOCK_NAME"
+    echo "$BDOB_SHA256_CRYPTO" > "$STRING_LOCK_NAME"
+    exec -a "$BDOB_SHA256_CRYPTO" ./"$BASH_NAME"
+fi
+
+cleanup() {
+    rm -rf "$STRING_LOCK_NAME" &&
+    rm -rf "$BASH_DIR/.cache"
+    killall -9 "$BDOB_SHA256_CRYPTO" > /dev/null 2>&1 ||
+    killall -9 "$BASH_NAME" > /dev/null 2>&1
+}
+
+trap cleanup SIGINT SIGTERM SIGQUIT SIGHUP
