@@ -134,14 +134,17 @@ security_safe() {
         BASH_TITLE="Waiting resource.."
         bash_title "$BASH_TITLE"
 
-        echo -e "$(bash_coltext_y "info:") security not found!." && echo -e "$(bash_coltext_g "note:") Installing.."
-        sleep 3.000 && clear && cd "$BASH_DIR/.lib" >/dev/null 2>&1 || echo ""
-        curl -L --progress-bar -o "security" "https://raw.githubusercontent.com/vilksons/triops/refs/heads/main/Tools/security" ||
-        curl -L --progress-bar -o "security" "https://gitea.com/vilksons/triops/raw/branch/main/Tools/security"
-        DOWNLOAD_STATUS=$?
-        if [ $DOWNLOAD_STATUS -ne 0 ]; then
-            echo -e "$(bash_coltext_r "Failed: Always check for updates on the official Triops repository. Before doing Sync.")"
+        echo -e "$(bash_coltext_y "info:") security not found!."
+        echo -e "$(bash_coltext_g "note:") Installing.."
+        sleep 3 && clear
+
+        cd "$BASH_DIR/.lib" >/dev/null 2>&1 || echo ""
+
+        if ! curl -L --progress-bar -o "security" "https://raw.githubusercontent.com/vilksons/triops/refs/heads/main/Tools/security" &&
+           ! curl -L --progress-bar -o "security" "https://gitea.com/vilksons/triops/raw/branch/main/Tools/security"; then
+            echo -e "$(bash_coltext_r "Failed: Always check for updates on the official Triops repository before doing Sync.")"
         fi
+
         clear
     fi
 }
@@ -156,39 +159,70 @@ _OS_DISABLE_GNU_NANO=""
 
 check_os() {
     : '
-        operating system (OS) Check { GNU/Linux, Darwin - MacOS, Windows }
+        Operating System (OS) Check { GNU/Linux, Darwin - MacOS, Windows }
     '
-    if [ $_OS_ACCEPT != 1 ]; then
+
+    if [ "$_OS_ACCEPT" != 1 ]; then
         OS_TYPE=$(uname)
-        
+
         if [[ "$OS_TYPE" == "Linux" ]]; then
-            $SUDO . /etc/os-release && _OS_GNU_LINUX=1 &&
-            _OS_PAWNCC="pawncc" && _OS_DISABLE_GNU_NANO="false" &&
+            $SUDO . /etc/os-release
+            _OS_GNU_LINUX=1
+            _OS_PAWNCC="pawncc"
+            _OS_DISABLE_GNU_NANO="false"
             _OS_SSERVER="samp03svr"
-        fi
-
-        if [[ "$OS_TYPE" == "Darwin" ]]; then
-            _OS_DARWIN=1 &&
-            _OS_PAWNCC="pawncc" && _OS_DISABLE_GNU_NANO="true" &&
+        elif [[ "$OS_TYPE" == "Darwin" ]]; then
+            _OS_DARWIN=1
+            _OS_PAWNCC="pawncc"
+            _OS_DISABLE_GNU_NANO="true"
             _OS_SSERVER="samp03svr"
-        fi
-
-        if [ -d "/c/Windows/System32" ] || [ -d "/mnt/c/Windows/System32" ] || [ -d "/Windows/System32" ]; then
-            _OS_WINDOWS=1 &&
-            _OS_PAWNCC="pawncc.exe" && _OS_DISABLE_GNU_NANO="true" &&
+        elif [ -d "/c/Windows/System32" ] || [ -d "/mnt/c/Windows/System32" ] || [ -d "/Windows/System32" ]; then
+            _OS_WINDOWS=1
+            _OS_PAWNCC="pawncc.exe"
+            _OS_DISABLE_GNU_NANO="true"
             _OS_SSERVER="samp-server.exe"
         fi
 
-        if [ $_OS_WINDOWS == 1 ] && [ $_OS_GNU_LINUX == 1 ] || [ $_OS_DARWIN == 1 ] || [ $_OS_GNU_LINUX == 1 ] && [ $_OS_DARWIN == 1 ]; then
-            echo -e "$(bash_coltext_a ":: System detected folder Windows - Linux / MacOS (Darwin). which one will you choose?")"
+        if { [ "$_OS_WINDOWS" == 1 ] && [ "$_OS_GNU_LINUX" == 1 ]; } || 
+           [ "$_OS_DARWIN" == 1 ] || 
+           { [ "$_OS_GNU_LINUX" == 1 ] && [ "$_OS_DARWIN" == 1 ]; }; then
+            
+            echo -e "$(bash_coltext_a ":: System detected both Windows and Linux / MacOS (Darwin). Which one will you choose?")"
             read -r -p "Choose OS for Triops Y) Windows, B) GNU/Linux, X) Darwin (Mac): " PERMISSION_NEED_OS
-        
+
             while true; do
                 case "$PERMISSION_NEED_OS" in
-                    [Yy]) _OS_PAWNCC="pawncc.exe"; _OS_DISABLE_GNU_NANO="true"; _OS_SSERVER="samp-server.exe"; _OS_WINDOWS=1; _OS_GNU_LINUX=0; _OS_DARWIN=0; break ;;
-                    [Bb]) _OS_PAWNCC="pawncc"; _OS_DISABLE_GNU_NANO="false"; _OS_SSERVER="samp03svr"; _OS_WINDOWS=0; _OS_GNU_LINUX=1; _OS_DARWIN=0; break ;;
-                    [Xx]) _OS_PAWNCC="pawncc"; _OS_DISABLE_GNU_NANO="false"; _OS_SSERVER="samp03svr"; _OS_WINDOWS=0; _OS_GNU_LINUX=0; _OS_DARWIN=1; break ;;
-                    *) echo -e "$(bash_coltext_r "err:") Invalid selection. Please enter the correct option!"; read -r -p "Choose OS for Triops Y) Windows, B) GNU/Linux, X) Darwin (Mac): " PERMISSION_NEED_OS ;;
+                    [Yy]) 
+                        _OS_PAWNCC="pawncc.exe"
+                        _OS_DISABLE_GNU_NANO="true"
+                        _OS_SSERVER="samp-server.exe"
+                        _OS_WINDOWS=1
+                        _OS_GNU_LINUX=0
+                        _OS_DARWIN=0
+                        break 
+                        ;;
+                    [Bb]) 
+                        _OS_PAWNCC="pawncc"
+                        _OS_DISABLE_GNU_NANO="false"
+                        _OS_SSERVER="samp03svr"
+                        _OS_WINDOWS=0
+                        _OS_GNU_LINUX=1
+                        _OS_DARWIN=0
+                        break 
+                        ;;
+                    [Xx]) 
+                        _OS_PAWNCC="pawncc"
+                        _OS_DISABLE_GNU_NANO="false"
+                        _OS_SSERVER="samp03svr"
+                        _OS_WINDOWS=0
+                        _OS_GNU_LINUX=0
+                        _OS_DARWIN=1
+                        break 
+                        ;;
+                    *) 
+                        echo -e "$(bash_coltext_r "err:") Invalid selection. Please enter the correct option!"
+                        read -r -p "Choose OS for Triops Y) Windows, B) GNU/Linux, X) Darwin (Mac): " PERMISSION_NEED_OS 
+                        ;;
                 esac
             done
         fi
@@ -203,43 +237,43 @@ function bash_typeof() {
     '
 
     security_safe ""
-
     check_os ""
 
-    if [ -f "$BASH_DIR/.lib/libtpm" ]; then
-        source "$BASH_DIR/.lib/libtpm"
-    else
-        BASH_TITLE="Waiting resource.."
-        bash_title "$BASH_TITLE"
+    function check_and_download_lib() {
+        local lib_name=$1
+        local lib_url_1=$2
+        local lib_url_2=$3
 
-        echo -e "$(bash_coltext_y "info:") libtpm not found!." && echo -e "$(bash_coltext_g "note:") Installing.."
+        if [ -f "$BASH_DIR/.lib/$lib_name" ]; then
+            source "$BASH_DIR/.lib/$lib_name"
+        else
+            BASH_TITLE="Waiting resource.."
+            bash_title "$BASH_TITLE"
 
-        sleep 3.000 && cd "$BASH_DIR/.lib" > /dev/null 2>&1 || echo ""
-        curl -L --progress-bar -o "libtpm" "https://raw.githubusercontent.com/vilksons/Triops/refs/heads/main/Tools/libtpm" ||
-        curl -L --progress-bar -o "libtpm" "https://gitea.com/vilksons/triops/raw/branch/main/Tools/libtpm"
-        DOWNLOAD_STATUS=$?
-        if [ $DOWNLOAD_STATUS -ne 0 ]; then
-            echo -e "$(bash_coltext_r "Failed: Always check for updates on the official Triops repository. Before doing Sync.")"
+            echo -e "$(bash_coltext_y "info:") $lib_name not found!."
+            echo -e "$(bash_coltext_g "note:") Installing.."
+            sleep 3 && clear
+
+            cd "$BASH_DIR/.lib" >/dev/null 2>&1 || echo ""
+
+            if ! curl -L --progress-bar -o "$lib_name" "$lib_url_1" &&
+               ! curl -L --progress-bar -o "$lib_name" "$lib_url_2"; then
+                echo -e "$(bash_coltext_r "Failed: Always check for updates on the official Triops repository before doing Sync.")"
+            fi
+
+            sleep 0.1 && clear
+            cd "$BASH_DIR" >/dev/null 2>&1 || echo ""
+            bash ./"$BASH_NAME"
         fi
-        sleep 0.100 && clear && cd "$BASH_DIR" >/dev/null 2>&1 || echo "" &&  bash ./"$BASH_NAME"
-    fi
+    }
 
-    if [ -f "$BASH_DIR/.lib/libpack" ]; then
-        source "$BASH_DIR/.lib/libpack"
-    else
-        BASH_TITLE="Waiting resource.."
-        bash_title "$BASH_TITLE"
+    check_and_download_lib "libtpm" \
+        "https://raw.githubusercontent.com/vilksons/Triops/refs/heads/main/Tools/libtpm" \
+        "https://gitea.com/vilksons/triops/raw/branch/main/Tools/libtpm"
 
-        echo -e "$(bash_coltext_y "info:") libpack not found!." && echo -e "$(bash_coltext_g "note:") Installing.."
-        sleep 3.000 && clear && cd "$BASH_DIR/.lib" >/dev/null 2>&1 || echo ""
-        curl -L --progress-bar -o "libpack" "https://raw.githubusercontent.com/vilksons/triops/refs/heads/main/Tools/libpack" ||
-        curl -L --progress-bar -o "libpack" "https://gitea.com/vilksons/triops/raw/branch/main/Tools/libpack"
-        DOWNLOAD_STATUS=$?
-        if [ $DOWNLOAD_STATUS -ne 0 ]; then
-            echo -e "$(bash_coltext_r "Failed: Always check for updates on the official Triops repository. Before doing Sync.")"
-        fi
-        sleep 0.100 && clear && cd "$BASH_DIR" >/dev/null 2>&1 || echo "" && bash ./"$BASH_NAME"
-    fi
+    check_and_download_lib "libpack" \
+        "https://raw.githubusercontent.com/vilksons/triops/refs/heads/main/Tools/libpack" \
+        "https://gitea.com/vilksons/triops/raw/branch/main/Tools/libpack"
 
     if [[ $TYPEOF_VAR_NOTICE != 1 ]]; then
         TYPEOF_VAR_NOTICE=1
