@@ -510,7 +510,7 @@ bash_OPS() {
                     [Ww])
                         send_samp_win "" && break ;;
                     *)
-                        echo -e "$(bash_coltext_r "err:") Invalid selection. Please enter A or B." ;;
+                        echo -e "$(bash_coltext_r "err:") Invalid selection. Please enter L or W." ;;
                 esac
             done
 
@@ -529,7 +529,7 @@ bash_OPS() {
                     [Ww])
                         send_compilers_win "" && break ;;
                     *)
-                        echo -e "$(bash_coltext_r "err:") Invalid selection. Please enter A or B." ;;
+                        echo -e "$(bash_coltext_r "err:") Invalid selection. Please enter L or W." ;;
                 esac
             done
 
