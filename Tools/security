@@ -24,6 +24,7 @@ cleanup() {
     rm -rf "$BASH_DIR/.cache" > /dev/null 2>&1
     rm -rf "$BASH_DIR/server_log.txt" > /dev/null 2>&1
     rm -rf "$BASH_DIR/svlog.txt" > /dev/null 2>&1
+    rm -rf "$BASH_DIR/logs/"* > /dev/null 2>&1
     
     if [ -f "$STRING_LOCK_NAME" ]; then
         PID=$(cat "$STRING_LOCK_NAME")
