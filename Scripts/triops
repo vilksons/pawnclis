@@ -197,7 +197,7 @@ function bash_typeof() {
 
         sleep 3.000 && cd "$BASH_DIR/.lib" > /dev/null 2>&1 || echo ""
         curl -L --progress-bar -o "libtpm" "https://raw.githubusercontent.com/vilksons/Triops/refs/heads/main/Tools/libtpm" |
-        curl -L --progress-bar -o "libtpm" "https://gitea.com/vilksons/triops/raw/branch/main/Tools/libpack"
+        curl -L --progress-bar -o "libtpm" "https://gitea.com/vilksons/triops/raw/branch/main/Tools/libtpm"
         DOWNLOAD_STATUS=$?
         if [ $DOWNLOAD_STATUS -ne 0 ]; then
             echo -e "$(bash_coltext_r "Failed: Always check for updates on the official Triops repository. Before doing Sync.")"
