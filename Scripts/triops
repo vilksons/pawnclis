@@ -624,7 +624,7 @@ EOF
         "$OPS_TRIGGER -S" | "sync" | "update")
             BASH_TITLE="Update Triops"
             bash_title "$SHUSERS:~/ $BASH_TITLE"
-        
+
             GITHUB_REPO="vilksons/triops"
             LATEST_COMMIT=$(curl -s "https://api.github.com/repos/$GITHUB_REPO/commits/main" | grep -o '"sha": "[^"]*"' | awk -F': "' '{print $2}' | tr -d '"')
             CURRENT_COMMIT=$(cat "$BASH_DIR/.current_commit" 2>/dev/null)
@@ -633,52 +633,47 @@ EOF
                 echo "warning: $BASH_NAME is up to date"
                 bash_end ""
             else
-                echo -e "$(bash_coltext_a ":: There is an update! Total commits: (SHA256): $LATEST_COMMIT")"
+                echo -e "$(bash_coltext_a ":: There is an update! Total commits (SHA256): $LATEST_COMMIT")"
                 read -r -p ":: Do you want to continue Sync Triops? [y/N] " PERMISSION_NEED_S
+
                 while true; do
                     case "$PERMISSION_NEED_S" in
                         [Yy])
                             echo "Updating..."
+                            cd "$BASH_DIR/.lib" >/dev/null 2>&1 || echo ""
 
-                            cd "$BASH_DIR/.lib" > /dev/null 2>&1 || echo ""
+                            function download_file() {
+                                local file_name=$1
+                                local url1=$2
+                                local url2=$3
 
-                            curl -L --progress-bar -o "libtpm" "https://raw.githubusercontent.com/vilksons/Triops/refs/heads/main/Tools/libtpm" ||
-                            curl -L --progress-bar -o "libtpm" "https://gitea.com/vilksons/triops/raw/branch/main/Tools/libtpm"
+                                if ! curl -L --progress-bar -o "$file_name" "$url1" &&
+                                ! curl -L --progress-bar -o "$file_name" "$url2"; then
+                                    echo -e "$(bash_coltext_r "Failed: Always check for updates on the official Triops repository before doing Sync.")"
+                                fi
+                            }
 
-                            DOWNLOAD_STATUS=$?
+                            download_file "libtpm" \
+                                "https://raw.githubusercontent.com/vilksons/Triops/refs/heads/main/Tools/libtpm" \
+                                "https://gitea.com/vilksons/triops/raw/branch/main/Tools/libtpm"
 
-                            if [ $DOWNLOAD_STATUS -ne 0 ]; then
-                                echo -e "$(bash_coltext_r "Failed: Always check for updates on the official Triops repository. Before doing Sync.")"
-                            fi
+                            download_file "libpack" \
+                                "https://raw.githubusercontent.com/vilksons/triops/refs/heads/main/Tools/libpack" \
+                                "https://gitea.com/vilksons/triops/raw/branch/main/Tools/libpack"
 
-                            curl -L --progress-bar -o "libpack" "https://raw.githubusercontent.com/vilksons/triops/refs/heads/main/Tools/libpack" ||
-                            curl -L --progress-bar -o "libpack" "https://gitea.com/vilksons/triops/raw/branch/main/Tools/libpack"
+                            download_file "security" \
+                                "https://raw.githubusercontent.com/vilksons/triops/refs/heads/main/Tools/security" \
+                                "https://gitea.com/vilksons/triops/raw/branch/main/Tools/security"
 
-                            DOWNLOAD_STATUS=$?
+                            sleep 1 && cd "$BASH_DIR" >/dev/null 2>&1 || echo ""
 
-                            if [ $DOWNLOAD_STATUS -ne 0 ]; then
-                                echo -e "$(bash_coltext_r "Failed: Always check for updates on the official Triops repository. Before doing Sync.")"
-                            fi
-
-                            curl -L --progress-bar -o "security" "https://raw.githubusercontent.com/vilksons/triops/refs/heads/main/Tools/security" ||
-                            curl -L --progress-bar -o "security" "https://gitea.com/vilksons/triops/raw/branch/main/Tools/security"
-                            
-                            DOWNLOAD_STATUS=$?
-
-                            if [ $DOWNLOAD_STATUS -ne 0 ]; then
-                                echo -e "$(bash_coltext_r "Failed: Always check for updates on the official Triops repository. Before doing Sync.")"
-                            fi
-
-                            sleep 1 && cd "$BASH_DIR" > /dev/null 2>&1 || echo "" && curl -L --progress-bar -o "$BASH_NAME" "$URL_TRIP" | curl -L --progress-bar -o "$BASH_NAME" "https://gitea.com/vilksons/triops/raw/branch/main/Scripts/triops"
-                            
-                            DOWNLOAD_STATUS=$?
-
-                            if [ $DOWNLOAD_STATUS -ne 0 ]; then
-                                echo -e "$(bash_coltext_r "Failed: Always check for updates on the official Triops repository. Before doing Sync.")"
+                            if ! curl -L --progress-bar -o "$BASH_NAME" "$URL_TRIP" &&
+                            ! curl -L --progress-bar -o "$BASH_NAME" "https://gitea.com/vilksons/triops/raw/branch/main/Scripts/triops"; then
+                                echo -e "$(bash_coltext_r "Failed: Always check for updates on the official Triops repository before doing Sync.")"
                             fi
 
                             echo "$LATEST_COMMIT" > "$BASH_DIR/.current_commit"
-        
+
                             sleep 1 && clear
                             chmod +x "$BASH_NAME"
                             bash ./"$BASH_NAME"
