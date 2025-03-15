@@ -1,5 +1,39 @@
 #!/bin/bash
 
+process_file() {
+    local file="$1"
+    python3 -c "
+import json, sys
+try:
+    with open('$file') as f:
+        # Coba parsing sebagai JSON
+        try:
+            data = json.load(f)
+            packages = data.get('package', [])
+            if isinstance(packages, list):
+                for pkg in packages:
+                    print(pkg)
+            else:
+                print(packages)
+        except json.JSONDecodeError:
+            # Jika bukan JSON, proses sebagai teks biasa
+            f.seek(0)
+            in_package_section = False
+            for line in f:
+                if '\"package\"' in line:
+                    in_package_section = True
+                    continue
+                if in_package_section and line.strip() == ']':
+                    in_package_section = False
+                    continue
+                if in_package_section and line.strip():
+                    print(line.split('\"')[1])
+except Exception as e:
+    print('error load json for : \"package\"', file=sys.stderr)
+    sys.exit(1)
+"
+}
+
 function bash_typeof2() {
     if [ ! -f "tpm.json" ]; then
         echo -e "$(bash_coltext_g "warn:") tpm.json not found"
@@ -56,8 +90,7 @@ bash_TPM()
             if [[ -n "$TPM_REPOSITORY_URL" && "$TPM_REPOSITORY_URL" != "$TPM_TR -S" ]]; then
                 TPM_URLS=("$TPM_REPOSITORY_URL")
             else
-                mapfile -t TPM_URLS < <(awk -F '"' '/"package"/ {f=1; next} f && NF {print $2} /]/ {f=0}' "$TPM_PACKAGE_FILE" || \
-                    grep -oP '(?<=")[^"]+(?=")' "$TPM_PACKAGE_FILE" | sed -n '/package/,$p'  || echo "error load json for : \"package\"")
+                mapfile -t TPM_URLS < <(process_file "$TPM_PACKAGE_FILE" || echo "error load json for : \"package\"")
             fi
 
             for TPM_REPOSITORY_URL in "${TPM_URLS[@]}"; do
@@ -147,7 +180,7 @@ bash_TPM()
                 fi
 
                 echo -e "$(bash_coltext_y "Downloading") $TPM_FILE_NAME $TPM_VERSION_REPO"
-
+                
 : '
     Installer
 '
