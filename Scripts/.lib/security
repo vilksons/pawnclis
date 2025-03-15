@@ -1,0 +1,38 @@
+#!/bin/bash
+
+: '
+    Double SHA256 encryption for Server SA-MP
+'
+DOB_SHA256_CRYPTO="$(echo "$RANDOM$(date +%s%N)" | sha256sum | awk '{print $1}' | xxd -r -p | sha256sum | awk '{print $1}')"
+export DOB_SHA256_CRYPTO
+
+: '
+    Double SHA256 encryption for Triops
+'
+BDOB_SHA256_CRYPTO="$(echo "$RANDOM$(date +%s%N)" | sha256sum | awk '{print $1}' | xxd -r -p | sha256sum | awk '{print $1}')"
+export BDOB_SHA256_CRYPTO
+
+STRING_LOCK_NAME="$BASH_DIR/.bash_encrypt.lock"
+
+if [ ! -f "$STRING_LOCK_NAME" ]; then
+    touch "$STRING_LOCK_NAME"
+    echo "$BDOB_SHA256_CRYPTO" > "$STRING_LOCK_NAME"
+    exec -a "$BDOB_SHA256_CRYPTO" ./"$BASH_NAME"
+fi
+
+cleanup() {
+    rm -rf "$BASH_DIR/.cache" > /dev/null 2>&1
+    rm -rf "$BASH_DIR/server_log.txt" > /dev/null 2>&1
+    rm -rf "$BASH_DIR/svlog.txt" > /dev/null 2>&1
+    rm -rf "$BASH_DIR/logs/"* > /dev/null 2>&1
+    
+    if [ -f "$STRING_LOCK_NAME" ]; then
+        PID=$(cat "$STRING_LOCK_NAME")
+        kill -9 "$PID" > /dev/null 2>&1
+        rm -rf "$STRING_LOCK_NAME"
+    fi
+
+    wait && exit
+}
+
+trap cleanup SIGINT SIGTERM SIGQUIT SIGHUP
