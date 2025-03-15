@@ -3,8 +3,8 @@
 RELEASE_DATE="2025/03"
 
 if [ ! -f "triops.json" ]; then
-    cat > triops.json <<EOF
-{
+python3 -c 'import json; 
+data = {
     "amx_opt": ["-d2", "-Z+"],
     "tpm_dir": "pawno",
     "tpm_subdir": "include",
@@ -13,8 +13,9 @@ if [ ! -f "triops.json" ]; then
     "chatbot_model": "",
     "chatbot_biodata": "",
     "chatbot_json_get": ""
-}
-EOF
+}; 
+with open("triops.json", "w") as f: 
+    json.dump(data, f, indent=4)' 
 fi
 
 if [ ! -d ".cache" ]; then
