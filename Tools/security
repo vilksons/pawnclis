@@ -20,14 +20,17 @@ if [ ! -f "$STRING_LOCK_NAME" ]; then
 fi
 
 cleanup() {
-    rm -rf "$STRING_LOCK_NAME" > /dev/null 2>&1
     rm -rf "$BASH_DIR/.cache" > /dev/null 2>&1
     rm -rf "$BASH_DIR/server_log.txt" > /dev/null 2>&1
     rm -rf "$BASH_DIR/svlog.txt" > /dev/null 2>&1
-    killall -9 "$BDOB_SHA256_CRYPTO" > /dev/null 2>&1 ||
-    pkill -9 "$BDOB_SHA256_CRYPTO" > /dev/null 2>&1 ||
-    killall -9 "$BASH_NAME" > /dev/null 2>&1 ||
-    pkill -9 "$BASH_NAME" > /dev/null 2>&1
+    
+    if [ -f "$STRING_LOCK_NAME" ]; then
+        PID=$(cat "$STRING_LOCK_NAME")
+        kill -9 "$PID" > /dev/null 2>&1
+        rm -rf "$STRING_LOCK_NAME"
+    fi
+
+    wait && exit
 }
 
 trap cleanup SIGINT SIGTERM SIGQUIT SIGHUP

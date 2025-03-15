@@ -281,7 +281,10 @@ bash_OPS() {
             BASH_TITLE="compiler"
             bash_title "$SHUSERS:~/ $BASH_TITLE"
 
-            killall -15 "$DOB_SHA256_CRYPTO" > /dev/null 2>&1
+            if [ -f "$DOB_SHA256_CRYPTO" ]; then
+                PID=$(cat "$DOB_SHA256_CRYPTO")
+                kill -15 "$PID" > /dev/null 2>&1
+            fi
             
             if [[ "$OPS_OPTION_FLAGS" =~ ^"$OPS_TRIGGER -c compiler " ]]; then
                 OPS_FIND_INPUT="${OPS_OPTION_FLAGS#"$OPS_TRIGGER -c compiler "}"
@@ -342,7 +345,10 @@ bash_OPS() {
                 fi
             done
 
-            killall -15 "$DOB_SHA256_CRYPTO" > /dev/null 2>&1
+            if [ -f "$DOB_SHA256_CRYPTO" ]; then
+                PID=$(cat "$DOB_SHA256_CRYPTO")
+                kill -15 "$PID" > /dev/null 2>&1
+            fi
             echo
             bash_end ""
             ;;
@@ -350,7 +356,10 @@ bash_OPS() {
             BASH_TITLE="running"
             bash_title "$SHUSERS:~/ $BASH_TITLE"
 
-            killall -15 "$DOB_SHA256_CRYPTO" > /dev/null 2>&1
+            if [ -f "$DOB_SHA256_CRYPTO" ]; then
+                PID=$(cat "$DOB_SHA256_CRYPTO")
+                kill -15 "$PID" > /dev/null 2>&1
+            fi
 
             if [[ "$OPS_OPTION_FLAGS" =~ ^"$OPS_TRIGGER -r runn " ]]; then
                 OPS_FIND_INPUT="${OPS_OPTION_FLAGS#"$OPS_TRIGGER -r runn "}"
@@ -368,7 +377,10 @@ bash_OPS() {
             BASH_TITLE="compile & running"
             bash_title "$SHUSERS:~/ $BASH_TITLE"
 
-            killall -15 "$DOB_SHA256_CRYPTO" > /dev/null 2>&1
+            if [ -f "$DOB_SHA256_CRYPTO" ]; then
+                PID=$(cat "$DOB_SHA256_CRYPTO")
+                kill -15 "$PID" > /dev/null 2>&1
+            fi
 
             COMPILER_MODE="false"
             echo && compilers ""
@@ -383,7 +395,10 @@ bash_OPS() {
             BASH_TITLE="debugging a server"
             bash_title "$SHUSERS:~/ $BASH_TITLE"
 
-            killall -15 "$DOB_SHA256_CRYPTO" > /dev/null 2>&1
+            if [ -f "$DOB_SHA256_CRYPTO" ]; then
+                PID=$(cat "$DOB_SHA256_CRYPTO")
+                kill -15 "$PID" > /dev/null 2>&1
+            fi
 
             if [[ "$OPS_OPTION_FLAGS" =~ ^"$OPS_TRIGGER -d debug " ]]; then
                 OPS_FIND_INPUT="${OPS_OPTION_FLAGS#"$OPS_TRIGGER -d debug "}"
@@ -407,7 +422,10 @@ bash_OPS() {
             BASH_TITLE="stopped a server"
             bash_title "$SHUSERS:~/ $BASH_TITLE"
 
-            killall -15 "$DOB_SHA256_CRYPTO" > /dev/null 2>&1
+            if [ -f "$DOB_SHA256_CRYPTO" ]; then
+                PID=$(cat "$DOB_SHA256_CRYPTO")
+                kill -15 "$PID" > /dev/null 2>&1
+            fi
             bash_end ""
             ;;
         "$OPS_TRIGGER -t" | "restart")
@@ -415,7 +433,10 @@ bash_OPS() {
             bash_title "$SHUSERS:~/ $BASH_TITLE"
 
             if pgrep -x "$_OS_SSERVER" > /dev/null; then
-                killall -15 "$DOB_SHA256_CRYPTO" > /dev/null 2>&1
+                if [ -f "$DOB_SHA256_CRYPTO" ]; then
+                PID=$(cat "$DOB_SHA256_CRYPTO")
+                kill -15 "$PID" > /dev/null 2>&1
+            fi
                 sleep 2
                 triops_servers ""
             else
@@ -955,7 +976,10 @@ function withArgs_triops_servers() {
         echo
 
         if [ $VAR_SERVERS == 2 ]; then
-            killall -15 "$DOB_SHA256_CRYPTO" > /dev/null 2>&1
+            if [ -f "$DOB_SHA256_CRYPTO" ]; then
+                PID=$(cat "$DOB_SHA256_CRYPTO")
+                kill -15 "$PID" > /dev/null 2>&1
+            fi
         fi
     fi
 
