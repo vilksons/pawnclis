@@ -502,7 +502,7 @@ bash_OPS() {
             bash_title "$SHUSERS:~/ $BASH_TITLE"
 
             while true; do
-                echo "# Select: [L]inux for Linux [W]indows for Windows"
+                echo "# Select: [L]inux for Linux Files [W]indows for Windows Files"
                 read -r -p ">> " SEL_CO
                 case "$SEL_CO" in
                     [Ll])
@@ -521,7 +521,7 @@ bash_OPS() {
             bash_title "$SHUSERS:~/ $BASH_TITLE"
 
             while true; do
-                echo "# Select: [L]inux for Linux [W]indows for Windows"
+                echo "# Select: [L]inux for Linux Files [W]indows for Windows Files"
                 read -r -p ">> " SEL_CO
                 case "$SEL_CO" in
                     [Ll])
