@@ -137,7 +137,7 @@ security_safe() {
 
         echo -e "$(bash_coltext_y "info:") security not found!."
         echo -e "$(bash_coltext_g "note:") Installing.."
-        sleep 3 && clear
+        sleep 3 > /dev/null && clear
 
         cd "$BASH_DIR/.lib" >/dev/null 2>&1 || echo ""
 
@@ -253,7 +253,7 @@ function bash_typeof() {
 
             echo -e "$(bash_coltext_y "info:") $lib_name not found!."
             echo -e "$(bash_coltext_g "note:") Installing.."
-            sleep 3 && clear
+            sleep 3 > /dev/null && clear
 
             cd "$BASH_DIR/.lib" >/dev/null 2>&1 || echo ""
 
@@ -262,7 +262,7 @@ function bash_typeof() {
                 echo -e "$(bash_coltext_r "Failed: Always check for updates on the official Triops repository before doing Sync.")"
             fi
 
-            sleep 0.1 && clear
+            sleep 0.1 > /dev/null && clear
             cd "$BASH_DIR" >/dev/null 2>&1 || echo ""
             bash ./"$BASH_NAME"
         fi
@@ -364,7 +364,10 @@ bash_OPS() {
                 bash_end ""
             fi
 
-            mapfile -d '' files < <(find "$BASH_DIR" -name "$OPS_FIND_INPUT" -type f -print0)
+            files=()
+            while IFS= read -r -d '' file; do
+                files+=("$file")
+            done < <(find "$BASH_DIR" -name "$OPS_FIND_INPUT" -type f -print0)
 
             for file in "${files[@]}"; do
                 if [ -f "$file" ] && [[ "$file" != *.amx ]]; then
@@ -377,7 +380,7 @@ bash_OPS() {
                     "$COMPILER_PAWNCC" -i"$BASH_DIR$BASH_ALLOW_SDIR" "$file" -o"$AMX_O" "$AMX_OPT_F" > "$METADAT_FILE" 2>&1
 
                     bash_cache_compiler ""
-                    sleep 0.100 &&
+                    sleep 0.100 > /dev/null &&
                     cat "$METADAT_FILE"
 
                     if [ -s "$AMX_O" ]; then
@@ -492,7 +495,7 @@ bash_OPS() {
                 PID=$(cat "$DOB_SHA256_CRYPTO")
                 kill -15 "$PID" > /dev/null 2>&1
             fi
-                sleep 2
+                sleep 2 > /dev/null
                 triops_servers ""
             else
                 echo "error: No progress Server running."
@@ -618,7 +621,7 @@ EOF
             bash_title "$SHUSERS:~/ $BASH_TITLE"
 
             clear
-            sleep 0.100
+            sleep 0.100 > /dev/null
             chmod +x "$BASH_NAME"
             bash ./"$BASH_NAME"
             ;;
@@ -666,7 +669,7 @@ EOF
                                 "https://raw.githubusercontent.com/vilksons/triops/refs/heads/main/Tools/security" \
                                 "https://gitea.com/vilksons/triops/raw/branch/main/Tools/security"
 
-                            sleep 1 && cd "$BASH_DIR" >/dev/null 2>&1 || echo ""
+                            sleep 1 > /dev/null && cd "$BASH_DIR" >/dev/null 2>&1 || echo ""
 
                             if ! curl -L --progress-bar -o "$BASH_NAME" "$URL_TRIP" &&
                             ! curl -L --progress-bar -o "$BASH_NAME" "https://gitea.com/vilksons/triops/raw/branch/main/Scripts/triops"; then
@@ -675,7 +678,7 @@ EOF
 
                             echo "$LATEST_COMMIT" > "$BASH_DIR/.current_commit"
 
-                            sleep 1 && clear
+                            sleep 1 > /dev/null && clear
                             chmod +x "$BASH_NAME"
                             bash ./"$BASH_NAME"
                             break
@@ -718,7 +721,7 @@ EOF
             BASH_TITLE="exit"
             bash_title "$SHUSERS:~/ $BASH_TITLE"
 
-            sleep 0.100 &&
+            sleep 0.100 > /dev/null &&
             bash -
             ;;
         "$OPS_TRIGGER -a"* | "chatbot"* | "ai")
@@ -806,13 +809,13 @@ EOF
             case "$PERMISSION_NEED_RC" in
                 [Yy])
                     cd "$BASH_DIR" > /dev/null 2>&1 || echo ""
-                    rm -rf "$BASH_DIR/.cache" && sleep 1
+                    rm -rf "$BASH_DIR/.cache" && sleep 1 > /dev/null
 
                     if [ ! -d ".cache" ]; then
                         mkdir ".cache"
                     fi
 
-                    sleep 0.100 &&
+                    sleep 0.100 > /dev/null &&
                     bash_end ""
                     break
                     ;;
@@ -977,7 +980,7 @@ function triops_servers() {
 
     chmod 777 "$_OS_SSERVER"
     exec -a "$DOB_SHA256_CRYPTO" ./"$_OS_SSERVER" &
-    sleep 2
+    sleep 2 > /dev/null
     if ! pgrep -x "$_OS_SSERVER" > /dev/null; then
         BASH_TITLE="running - failed"
         bash_title "$SHUSERS:~/ $BASH_TITLE"
@@ -986,7 +989,7 @@ function triops_servers() {
         echo -e "$(bash_coltext_r "# Fail")"
         echo
         if [ -f "server_log.txt" ]; then
-            sleep 2
+            sleep 2 > /dev/null
             cat server_log.txt
             echo
         else
@@ -1001,7 +1004,7 @@ function triops_servers() {
         echo -e "$(bash_coltext_y "# Success")"
         echo
 
-        sleep 2
+        sleep 2 > /dev/null
         if grep -i "error" server_log.txt > /dev/null; then
             start_true ""
         else
@@ -1033,7 +1036,7 @@ function withArgs_triops_servers() {
     else
         chmod 777 "$_OS_SSERVER"
         exec -a "$DOB_SHA256_CRYPTO" ./"$_OS_SSERVER" &
-        sleep 1
+        sleep 1 > /dev/null
         cat server_log.txt
         echo
 
@@ -1067,7 +1070,10 @@ function triops_compilers() {
         bash_end ""
     fi
 
-    mapfile -d '' files < <(find "$BASH_DIR" -name "*.io*" -type f -print0)
+    files=()
+    while IFS= read -r -d '' file; do
+        files+=("$file")
+    done < <(find "$BASH_DIR" -name "*.io*" -type f -print0)
 
     for file in "${files[@]}"; do
         if [ -f "$file" ] && [[ "$file" != *.amx ]]; then
@@ -1081,7 +1087,7 @@ function triops_compilers() {
             "$COMPILER_PAWNCC" -i"$BASH_DIR$BASH_ALLOW_SDIR" "$file" -o"$AMX_O" "$AMX_OPT_F" > "$METADAT_FILE" 2>&1
 
             bash_cache_compiler ""
-            sleep 0.100 &&
+            sleep 0.100 > /dev/null &&
             cat "$METADAT_FILE"
 
             if [ -s "$AMX_O" ]; then
@@ -1137,13 +1143,13 @@ function bash_check_dir() {
         echo " [A subdirectory or file $folder already exists.]"
         echo "-"
 
-        sleep 0.100 &&
+        sleep 0.100 > /dev/null &&
         return
     else
         mkdir -p "$folder"
         echo ":: Create? '$BASH_DIR/$folder'...: [yes]"
         
-        sleep 0.200
+        sleep 0.200 > /dev/null
 
         if [ "$folder" == "gamemodes" ]; then
             cat <<EOF > gamemodes/main.io.pwn
@@ -1243,5 +1249,5 @@ ok_next() {
 bash_typeof ""
 
 if [ -z "$1" ]; then
-    bash_end ""
+    bash_typeof ""
 fi
