@@ -117,7 +117,7 @@ security_safe() {
 
         echo -e "$(bash_coltext_y "info:") security not found!." && echo -e "$(bash_coltext_g "note:") Installing.."
         sleep 3.000 && clear && cd "$BASH_DIR/.lib" >/dev/null 2>&1 || echo ""
-        curl -L --progress-bar -o "security" "https://raw.githubusercontent.com/vilksons/triops/refs/heads/main/Tools/security" |
+        curl -L --progress-bar -o "security" "https://raw.githubusercontent.com/vilksons/triops/refs/heads/main/Tools/security" ||
         curl -L --progress-bar -o "security" "https://gitea.com/vilksons/triops/raw/branch/main/Tools/security"
         DOWNLOAD_STATUS=$?
         if [ $DOWNLOAD_STATUS -ne 0 ]; then
@@ -196,7 +196,7 @@ function bash_typeof() {
         echo -e "$(bash_coltext_y "info:") libtpm not found!." && echo -e "$(bash_coltext_g "note:") Installing.."
 
         sleep 3.000 && cd "$BASH_DIR/.lib" > /dev/null 2>&1 || echo ""
-        curl -L --progress-bar -o "libtpm" "https://raw.githubusercontent.com/vilksons/Triops/refs/heads/main/Tools/libtpm" |
+        curl -L --progress-bar -o "libtpm" "https://raw.githubusercontent.com/vilksons/Triops/refs/heads/main/Tools/libtpm" ||
         curl -L --progress-bar -o "libtpm" "https://gitea.com/vilksons/triops/raw/branch/main/Tools/libtpm"
         DOWNLOAD_STATUS=$?
         if [ $DOWNLOAD_STATUS -ne 0 ]; then
@@ -213,7 +213,7 @@ function bash_typeof() {
 
         echo -e "$(bash_coltext_y "info:") libpack not found!." && echo -e "$(bash_coltext_g "note:") Installing.."
         sleep 3.000 && clear && cd "$BASH_DIR/.lib" >/dev/null 2>&1 || echo ""
-        curl -L --progress-bar -o "libpack" "https://raw.githubusercontent.com/vilksons/triops/refs/heads/main/Tools/libpack" |
+        curl -L --progress-bar -o "libpack" "https://raw.githubusercontent.com/vilksons/triops/refs/heads/main/Tools/libpack" ||
         curl -L --progress-bar -o "libpack" "https://gitea.com/vilksons/triops/raw/branch/main/Tools/libpack"
         DOWNLOAD_STATUS=$?
         if [ $DOWNLOAD_STATUS -ne 0 ]; then
@@ -587,8 +587,10 @@ EOF
                         [Yy])
                             echo "Updating..."
 
-                            cd "$BASH_DIR/.lib" > /dev/null 2>&1 || echo "" &&
-                            curl -L --progress-bar -o "libtpm" "https://raw.githubusercontent.com/vilksons/Triops/refs/heads/main/Tools/libtpm"
+                            cd "$BASH_DIR/.lib" > /dev/null 2>&1 || echo ""
+
+                            curl -L --progress-bar -o "libtpm" "https://raw.githubusercontent.com/vilksons/Triops/refs/heads/main/Tools/libtpm" ||
+                            curl -L --progress-bar -o "libtpm" "https://gitea.com/vilksons/triops/raw/branch/main/Tools/libtpm"
 
                             DOWNLOAD_STATUS=$?
 
@@ -596,8 +598,18 @@ EOF
                                 echo -e "$(bash_coltext_r "Failed: Always check for updates on the official Triops repository. Before doing Sync.")"
                             fi
 
-                            curl -L --progress-bar -o "libpack" "https://raw.githubusercontent.com/vilksons/triops/refs/heads/main/Tools/libpack"
+                            curl -L --progress-bar -o "libpack" "https://raw.githubusercontent.com/vilksons/triops/refs/heads/main/Tools/libpack" ||
+                            curl -L --progress-bar -o "libpack" "https://gitea.com/vilksons/triops/raw/branch/main/Tools/libpack"
 
+                            DOWNLOAD_STATUS=$?
+
+                            if [ $DOWNLOAD_STATUS -ne 0 ]; then
+                                echo -e "$(bash_coltext_r "Failed: Always check for updates on the official Triops repository. Before doing Sync.")"
+                            fi
+
+                            curl -L --progress-bar -o "security" "https://raw.githubusercontent.com/vilksons/triops/refs/heads/main/Tools/security" ||
+                            curl -L --progress-bar -o "security" "https://gitea.com/vilksons/triops/raw/branch/main/Tools/security"
+                            
                             DOWNLOAD_STATUS=$?
 
                             if [ $DOWNLOAD_STATUS -ne 0 ]; then
