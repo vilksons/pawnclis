@@ -102,13 +102,9 @@ resetVariable() {
     VAR_SERVERS=0
 }
 
-_OS_ACCEPT=0
-_OS_GNU_LINUX=0
-_OS_WINDOWS=0
-_OS_DARWIN=0
-_OS_SSERVER="null"
-_OS_PAWNCC="null"
-_OS_DISABLE_GNU_NANO=""
+if [ ! -d ".lib" ]; then
+    mkdir ".lib"
+fi
 
 # shellcheck source=/dev/null
 
@@ -127,8 +123,17 @@ security_safe() {
         if [ $DOWNLOAD_STATUS -ne 0 ]; then
             echo -e "$(bash_coltext_r "Failed: Always check for updates on the official Triops repository. Before doing Sync.")"
         fi
+        clear
     fi
 }
+
+_OS_ACCEPT=0
+_OS_GNU_LINUX=0
+_OS_WINDOWS=0
+_OS_DARWIN=0
+_OS_SSERVER="null"
+_OS_PAWNCC="null"
+_OS_DISABLE_GNU_NANO=""
 
 check_os() {
     : '
@@ -181,10 +186,6 @@ function bash_typeof() {
     security_safe ""
 
     check_os ""
-
-    if [ ! -d ".lib" ]; then
-        mkdir ".lib"
-    fi
 
     if [ -f "$BASH_DIR/.lib/libtpm" ]; then
         source "$BASH_DIR/.lib/libtpm"
