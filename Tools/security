@@ -10,6 +10,7 @@ export DOB_SHA256_CRYPTO
     Double SHA256 encryption for Triops
 '
 BDOB_SHA256_CRYPTO="$(echo "$RANDOM$(date +%s%N)" | sha256sum | awk '{print $1}' | xxd -r -p | sha256sum | awk '{print $1}')"
+export BDOB_SHA256_CRYPTO
 
 STRING_LOCK_NAME="$BASH_DIR/.bash_encrypt.lock"
 
